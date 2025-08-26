@@ -1,0 +1,56 @@
+@startuml julliend-erd
+
+skin rose
+skinparam Style StrictUML
+skinparam LineType ortho
+skinparam monochrome true
+
+Class Patient {
+    * NHI: VARCHAR(7) PK
+    * NTA_Number: VARCHAR(7) PK
+--
+    + First_Name: VARCHAR(30)
+    + Surname: VARCHAR(30) 
+}
+
+Class Support_Person {
+    * Support_Person_ID: SERIAL PK
+--
+    + First_Name: VARCHAR(30)
+    + Surname: VARCHAR(30)
+    + Covered_By_NTA: BOOLEAN
+    + Patient_NHI: VARCHAR(7) FK
+}
+
+Class Booking{
+    * Booking_ID: SERIAL PK
+--
+    + Date_Of_Departure: DATE NOT NULL
+    + Date_Of_Return: DATE
+    + Booking_Status: VARCHAR(15)
+    + Estimated_Cost: DECIMAL(10, 2)
+    + Booking_Created_At: TIMESTAMP 
+    + Service_Provider_ID: INT FOREIGN KEY
+    + Patient_NTA: VARCHAR(7) FOREIGN KEY
+}
+
+Class Service_Provider {
+    * Name : VARCHAR(50) PK
+--
+    + Address : VARCHAR(100)
+}
+
+Class Accommodation {
+    * Address : VARCHAR(100) PK
+--
+    + Name : VARCHAR(50)
+}
+
+Patient ||--{Booking
+Booking }--|| Service_Provider
+Patient ||--o{ Support_Person
+Booking }--|| Accommodation
+
+
+
+@enduml
