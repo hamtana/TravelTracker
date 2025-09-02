@@ -1,0 +1,553 @@
+openapi: 3.1.0
+info:
+  title: NTA Travel & Booking API
+  version: 1.0.0
+  description: 'API for managing Patients, Bookings, Support Persons, Service Providers, and Accommodations.'
+servers:
+  - url: 'http://localhost:8080/api'
+paths:
+  /patients:
+    get:
+      summary: List all patients
+      responses:
+        '200':
+          description: A list of patients
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Patient'
+    post:
+      summary: Create a new patient
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Patient'
+      responses:
+        '201':
+          description: Patient created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Patient'
+  '/patients/{nhi}':
+    get:
+      summary: Get a patient by NHI
+      parameters:
+        - name: nhi
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Patient details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Patient'
+    put:
+      summary: Update a patient
+      parameters:
+        - name: nhi
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Patient'
+      responses:
+        '200':
+          description: Updated patient
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Patient'
+    delete:
+      summary: Delete a patient
+      parameters:
+        - name: nhi
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Patient deleted
+  '/patients/{nhi}/support-persons':
+    get:
+      summary: List support persons for a patient
+      parameters:
+        - name: nhi
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Support persons for patient
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SupportPerson'
+  /support-persons:
+    get:
+      summary: List all support persons
+      responses:
+        '200':
+          description: A list of support persons
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SupportPerson'
+    post:
+      summary: Create a new support person
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SupportPerson'
+      responses:
+        '201':
+          description: Support person created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SupportPerson'
+  '/support-persons/{id}':
+    get:
+      summary: Get a support person by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Support person details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SupportPerson'
+    put:
+      summary: Update a support person
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SupportPerson'
+      responses:
+        '200':
+          description: Updated support person
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SupportPerson'
+    delete:
+      summary: Delete a support person
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Support person deleted
+  /bookings:
+    get:
+      summary: List all bookings
+      responses:
+        '200':
+          description: A list of bookings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Booking'
+    post:
+      summary: Create a new booking
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Booking'
+      responses:
+        '201':
+          description: Booking created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Booking'
+  '/bookings/{id}':
+    get:
+      summary: Get booking details
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Booking details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Booking'
+    put:
+      summary: Update a booking
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Booking'
+      responses:
+        '200':
+          description: Updated booking
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Booking'
+    delete:
+      summary: Cancel a booking
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Booking cancelled
+  '/patients/{nhi}/bookings':
+    get:
+      summary: List bookings for a patient
+      parameters:
+        - name: nhi
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Bookings for patient
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Booking'
+  '/bookings/{id}/support-persons':
+    post:
+      summary: Assign a support person to a booking
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                supportPersonId:
+                  type: integer
+      responses:
+        '201':
+          description: Support person assigned
+    delete:
+      summary: Remove a support person from a booking
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: supportId
+          in: query
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Support person removed
+  /service-providers:
+    get:
+      summary: List all service providers
+      responses:
+        '200':
+          description: List of providers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ServiceProvider'
+    post:
+      summary: Create a new service provider
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ServiceProvider'
+      responses:
+        '201':
+          description: Service provider created
+  '/service-providers/{id}':
+    get:
+      summary: Get service provider by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Service provider details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceProvider'
+    put:
+      summary: Update service provider
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ServiceProvider'
+      responses:
+        '200':
+          description: Updated service provider
+    delete:
+      summary: Delete service provider
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Deleted service provider
+  /accommodations:
+    get:
+      summary: List all accommodations
+      responses:
+        '200':
+          description: List of accommodations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Accommodation'
+    post:
+      summary: Create a new accommodation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Accommodation'
+      responses:
+        '201':
+          description: Accommodation created
+  '/accommodations/{address}':
+    get:
+      summary: Get accommodation by address
+      parameters:
+        - name: address
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Accommodation details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Accommodation'
+    put:
+      summary: Update accommodation
+      parameters:
+        - name: address
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Accommodation'
+      responses:
+        '200':
+          description: Updated accommodation
+    delete:
+      summary: Delete accommodation
+      parameters:
+        - name: address
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Deleted accommodation
+components:
+  schemas:
+    Patient:
+      type: object
+      properties:
+        nhi:
+          type: string
+          maxLength: 7
+        ntaNumber:
+          type: string
+          maxLength: 7
+        firstName:
+          type: string
+          maxLength: 30
+        surname:
+          type: string
+          maxLength: 30
+      required:
+        - nhi
+        - ntaNumber
+        - firstName
+        - surname
+    SupportPerson:
+      type: object
+      properties:
+        id:
+          type: integer
+        firstName:
+          type: string
+          maxLength: 30
+        surname:
+          type: string
+          maxLength: 30
+        coveredByNta:
+          type: boolean
+        patientNhi:
+          type: string
+          maxLength: 7
+      required:
+        - id
+        - firstName
+        - surname
+        - coveredByNta
+        - patientNhi
+    Booking:
+      type: object
+      properties:
+        id:
+          type: integer
+        dateOfDeparture:
+          type: string
+          format: date
+        dateOfReturn:
+          type: string
+          format: date
+          nullable: true
+        bookingStatus:
+          type: string
+          maxLength: 15
+        estimatedCost:
+          type: number
+          format: float
+        bookingCreatedAt:
+          type: string
+          format: date-time
+        serviceProviderId:
+          type: integer
+        accommodationName:
+          type: string
+          maxLength: 50
+        patientNta:
+          type: string
+          maxLength: 7
+        supportPersons:
+          type: array
+          items:
+            $ref: '#/components/schemas/SupportPerson'
+      required:
+        - id
+        - dateOfDeparture
+        - bookingStatus
+        - estimatedCost
+        - bookingCreatedAt
+        - serviceProviderId
+        - accommodationName
+        - patientNta
+    ServiceProvider:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+          maxLength: 50
+        address:
+          type: string
+          maxLength: 100
+      required:
+        - id
+        - name
+        - address
+    Accommodation:
+      type: object
+      properties:
+        address:
+          type: string
+          maxLength: 100
+        name:
+          type: string
+          maxLength: 50
+      required:
+        - address
+        - name
