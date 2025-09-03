@@ -3,6 +3,9 @@ info:
   title: NTA Travel & Booking API
   version: 1.0.0
   description: 'API for managing Patients, Bookings, Support Persons, Service Providers, and Accommodations.'
+  contact:
+    name: Hamish Phillips
+    email: hamish@phillipsmusictech.co.nz
 servers:
   - url: 'http://localhost:8080/api'
 paths:
@@ -18,6 +21,12 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Patient'
+        '404':
+          description: Patients Not Found
+      operationId: getPatients
+      description: Retrieve all Patients
+      tags:
+        - patients
     post:
       summary: Create a new patient
       requestBody:
@@ -33,6 +42,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Patient'
+        '409':
+          description: Patient already exists
+      tags:
+        - patients
+      operationId: addPatient
+      description: Add a Patient
   '/patients/{nhi}':
     get:
       summary: Get a patient by NHI
@@ -49,6 +64,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Patient'
+      operationId: getPatientById
+      tags:
+        - patients
+      description: get Patient by Id
     put:
       summary: Update a patient
       parameters:
@@ -70,6 +89,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Patient'
+        '404':
+          description: Patient Not Found
+      operationId: updatePatientById
+      description: Update a Patient by Id.
+      tags:
+        - patients
     delete:
       summary: Delete a patient
       parameters:
@@ -81,6 +106,12 @@ paths:
       responses:
         '204':
           description: Patient deleted
+        '404':
+          description: Patient Not Found
+      operationId: deletePatientById
+      description: Delete a patient by Id
+      tags:
+        - patients
   '/patients/{nhi}/support-persons':
     get:
       summary: List support persons for a patient
@@ -99,6 +130,13 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/SupportPerson'
+        '404':
+          description: Patient Not Found
+      operationId: getPatientSupporters
+      description: Retrieve a patients supporters.
+      tags:
+        - patients
+        - support-persons
   /support-persons:
     get:
       summary: List all support persons
@@ -111,6 +149,12 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/SupportPerson'
+        '404':
+          description: Supporters Not Found
+      operationId: getSupporters
+      description: Retrieves all Patient Supporters
+      tags:
+        - support-persons
     post:
       summary: Create a new support person
       requestBody:
@@ -126,6 +170,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SupportPerson'
+        '409':
+          description: Supporter Already Exists
+      operationId: addSupportPerson
+      description: Add a Support Person
+      tags:
+        - support-persons
   '/support-persons/{id}':
     get:
       summary: Get a support person by ID
@@ -142,6 +192,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SupportPerson'
+        '404':
+          description: Supporter Not Found
+      operationId: getSupporterById
+      description: Retrieve a Support by thier ID.
+      tags:
+        - support-persons
     put:
       summary: Update a support person
       parameters:
@@ -163,6 +219,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SupportPerson'
+        '404':
+          description: Supporter Not Found
+      operationId: updateSupporterById
+      description: Updates a Supporter By thier ID.
+      tags:
+        - support-persons
     delete:
       summary: Delete a support person
       parameters:
@@ -174,6 +236,12 @@ paths:
       responses:
         '204':
           description: Support person deleted
+        '404':
+          description: Supporter Not Found
+      operationId: deleteSupporterById
+      description: Deletes a supporter by their ID.
+      tags:
+        - support-persons
   /bookings:
     get:
       summary: List all bookings
@@ -186,6 +254,12 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Booking'
+        '404':
+          description: Bookings Not Found
+      operationId: getBookings
+      description: Retrieve All Bookings
+      tags:
+        - bookings
     post:
       summary: Create a new booking
       requestBody:
@@ -201,6 +275,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Booking'
+      operationId: addBooking
+      description: Add a new Booking
+      tags:
+        - bookings
   '/bookings/{id}':
     get:
       summary: Get booking details
@@ -217,6 +295,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Booking'
+        '404':
+          description: Booking Not Found
+      operationId: getBookingById
+      description: Retrieve booking by ID.
+      tags:
+        - bookings
     put:
       summary: Update a booking
       parameters:
@@ -238,6 +322,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Booking'
+        '404':
+          description: Booking Not Found
+      operationId: updateBookingById
+      description: Update Booking by Id
+      tags:
+        - bookings
     delete:
       summary: Cancel a booking
       parameters:
@@ -249,6 +339,12 @@ paths:
       responses:
         '204':
           description: Booking cancelled
+        '404':
+          description: Booking Not Found
+      operationId: deleteBookingById
+      description: Delete Booking by Id
+      tags:
+        - bookings
   '/patients/{nhi}/bookings':
     get:
       summary: List bookings for a patient
@@ -267,6 +363,13 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Booking'
+        '404':
+          description: Patient Not Found
+      operationId: getPatientBookings
+      description: Retrieve Patients Bookings.
+      tags:
+        - patients
+        - bookings
   '/bookings/{id}/support-persons':
     post:
       summary: Assign a support person to a booking
@@ -288,6 +391,13 @@ paths:
       responses:
         '201':
           description: Support person assigned
+        '409':
+          description: Supporter Already Exists
+      operationId: addSupportPersonToBooking
+      description: Add a Support Person to the Booking.
+      tags:
+        - bookings
+        - support-persons
     delete:
       summary: Remove a support person from a booking
       parameters:
@@ -304,6 +414,13 @@ paths:
       responses:
         '204':
           description: Support person removed
+        '404':
+          description: Supporter Not Found
+      operationId: deleteBookingSupporterById
+      description: Delete Supporter from Booking by Supporter id
+      tags:
+        - bookings
+        - support-persons
   /service-providers:
     get:
       summary: List all service providers
@@ -316,6 +433,12 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/ServiceProvider'
+        '404':
+          description: Service Providers Not Found
+      operationId: getServiceProviders
+      description: Retrieve all Service Providers
+      tags:
+        - service-providers
     post:
       summary: Create a new service provider
       requestBody:
@@ -327,6 +450,12 @@ paths:
       responses:
         '201':
           description: Service provider created
+        '409':
+          description: Service Provider Already Exists
+      operationId: addServiceProvider
+      description: Add a Service Provider
+      tags:
+        - service-providers
   '/service-providers/{id}':
     get:
       summary: Get service provider by ID
@@ -343,6 +472,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServiceProvider'
+        '404':
+          description: Service Provider Not Found
+      operationId: getServiceProviderById
+      description: Retrieve a Service Provider by ID
+      tags:
+        - service-providers
     put:
       summary: Update service provider
       parameters:
@@ -360,6 +495,12 @@ paths:
       responses:
         '200':
           description: Updated service provider
+        '404':
+          description: Service Provider Not Found
+      operationId: updateServiceProviderById
+      description: Update a Service Provider by ID.
+      tags:
+        - service-providers
     delete:
       summary: Delete service provider
       parameters:
@@ -371,6 +512,12 @@ paths:
       responses:
         '204':
           description: Deleted service provider
+        '404':
+          description: Service Provider Not Found
+      operationId: deleteServiceProviderById
+      description: Delete a Service Provider by Id
+      tags:
+        - service-providers
   /accommodations:
     get:
       summary: List all accommodations
@@ -383,6 +530,12 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Accommodation'
+        '404':
+          description: Accommodation Not Found
+      operationId: getAccommodation
+      description: Retrieve All Accommodations
+      tags:
+        - accommodations
     post:
       summary: Create a new accommodation
       requestBody:
@@ -394,6 +547,12 @@ paths:
       responses:
         '201':
           description: Accommodation created
+        '409':
+          description: Accommodation Already Exists
+      operationId: addAccommodation
+      description: Add a new Accommodation
+      tags:
+        - accommodations
   '/accommodations/{address}':
     get:
       summary: Get accommodation by address
@@ -410,6 +569,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Accommodation'
+        '404':
+          description: Accommodation Not Found
+      operationId: getAccommodationByAddress
+      description: Retrieve accommodation via Address
+      tags:
+        - accommodations
     put:
       summary: Update accommodation
       parameters:
@@ -427,6 +592,12 @@ paths:
       responses:
         '200':
           description: Updated accommodation
+        '404':
+          description: Accommodation Not Found
+      operationId: updateAccommodationByAddress
+      description: Update Accommodation via Address
+      tags:
+        - accommodations
     delete:
       summary: Delete accommodation
       parameters:
@@ -438,6 +609,12 @@ paths:
       responses:
         '204':
           description: Deleted accommodation
+        '404':
+          description: Accommodation not Found
+      operationId: deleteAccommodationByAddress
+      description: Delete an accommodation by Address
+      tags:
+        - accommodations
 components:
   schemas:
     Patient:
@@ -551,3 +728,9 @@ components:
       required:
         - address
         - name
+tags:
+  - name: accommodations
+  - name: bookings
+  - name: patients
+  - name: service-providers
+  - name: support-persons

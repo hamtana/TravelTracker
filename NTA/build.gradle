@@ -21,6 +21,7 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter'
+    implementation "org.springframework.boot:spring-boot-starter-validation"
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
     // OpenAPI / Swagger Annotatiions
@@ -37,6 +38,7 @@ dependencies {
     annotationProcessor 'jakarta.annotation:jakarta.annotation-api:2.1.1'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.6.1'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
@@ -55,12 +57,13 @@ openApiGenerate {
 sourceSets {
     main {
         java {
-            srcDir "$buildDir/generated/src/main/java"
+            srcDirs += ["$buildDir/generated/src/main/java"]
         }
     }
 }
 
 compileJava.dependsOn tasks.openApiGenerate
+
 
 tasks.named('test') {
 	useJUnitPlatform()

@@ -1,4 +1,4 @@
-package com.CCDHB.controller;
+package com.CCDHB.NTA.controller;
 
 import com.CCDHB.api.PatientsApi;
 import com.CCDHB.model.Patient;
@@ -11,11 +11,11 @@ import java.util.List;
 @RestController
 public class PatientsController implements PatientsApi {
 
-    private final List<Patient> patients = new ArrayList<>();
+    private final List<Patient> patients = new ArrayList<>(); //uses collections
 
     @Override
     public ResponseEntity<List<Patient>> patientsGet() {
-        return ResponseEntity.ok(patients);
+        return ResponseEntity.status(201).body(patients);
     }
 
     @Override
