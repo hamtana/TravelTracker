@@ -591,6 +591,14 @@ components:
             $ref: '#/components/schemas/Booking'
             x-stoplight:
               id: a8mk4cej7l0wm
+        supportPersons:
+          type: array
+          x-stoplight:
+            id: p9o3b2jmiyybe
+          items:
+            $ref: '#/components/schemas/SupportPerson'
+            x-stoplight:
+              id: y7gtdvpq5sd1z
       required:
         - nhi
         - ntaNumber
@@ -609,15 +617,11 @@ components:
           maxLength: 30
         coveredByNta:
           type: boolean
-        patientNhi:
-          type: string
-          maxLength: 7
       required:
         - id
         - firstName
         - surname
         - coveredByNta
-        - patientNhi
     Booking:
       type: object
       properties:
