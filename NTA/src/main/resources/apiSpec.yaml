@@ -275,6 +275,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Booking'
+        '409':
+          description: Booking already exists
       operationId: addBooking
       description: Add a new Booking
       tags:

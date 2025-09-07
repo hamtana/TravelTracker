@@ -13,6 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @RestController
 public class PatientController implements PatientsApi {
 
+    // Follows the API Specification PatientApi interface
     // In-memory store of patients by NHI
     private final Map<String, Patient> patients = new ConcurrentHashMap<>();
 
