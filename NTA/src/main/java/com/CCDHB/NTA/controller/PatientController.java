@@ -62,14 +62,6 @@ public class PatientController implements PatientsApi {
         return ResponseEntity.ok(patient);
     }
 
-    @Override
-    public ResponseEntity<List<Booking>> getPatientBookings(String nhi) {
-        // for testing, just return an empty list
-        if (!patients.containsKey(nhi)) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(Collections.emptyList());
-    }
 
     @Override
     public ResponseEntity<List<SupportPerson>> getPatientSupporters(String nhi) {

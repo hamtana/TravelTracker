@@ -583,6 +583,14 @@ components:
         surname:
           type: string
           maxLength: 30
+        bookings:
+          type: array
+          x-stoplight:
+            id: xi4vzb16bknyh
+          items:
+            $ref: '#/components/schemas/Booking'
+            x-stoplight:
+              id: a8mk4cej7l0wm
       required:
         - nhi
         - ntaNumber
@@ -636,9 +644,6 @@ components:
         accommodationName:
           type: string
           maxLength: 50
-        patientNta:
-          type: string
-          maxLength: 7
         supportPersons:
           type: array
           items:
@@ -651,7 +656,6 @@ components:
         - bookingCreatedAt
         - serviceProviderId
         - accommodationName
-        - patientNta
     ServiceProvider:
       type: object
       properties:
