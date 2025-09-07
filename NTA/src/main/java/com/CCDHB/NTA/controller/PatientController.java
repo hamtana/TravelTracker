@@ -73,6 +73,10 @@ public class PatientController implements PatientsApi {
 
     @Override
     public ResponseEntity<List<SupportPerson>> getPatientSupporters(String nhi) {
-
+       Patient patient = patients.get(nhi);
+       if (patient != null) {
+           return ResponseEntity.ok(patient.getSupportPersons());
+       }
+         return ResponseEntity.notFound().build();
     }
 }
