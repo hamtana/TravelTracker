@@ -347,6 +347,31 @@ paths:
       tags:
         - patients
         - bookings
+    post:
+      summary: ''
+      operationId: addPatientBooking
+      responses:
+        '201':
+          description: Created New Booking
+        '409':
+          description: Booking already exists
+      description: Add a New Booking for a Patient
+      tags:
+        - patients
+        - bookings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Booking'
+        description: ''
+      parameters: []
+    parameters:
+      - schema:
+          type: string
+        name: nhi
+        in: path
+        required: true
   /service-providers:
     get:
       summary: List all service providers
@@ -605,6 +630,11 @@ components:
           maxLength: 15
         estimatedCost:
           type: number
+          format: float
+        estimatedCostForPatient:
+          type: number
+          x-stoplight:
+            id: eu7asntsiivnn
           format: float
         bookingCreatedAt:
           type: string
