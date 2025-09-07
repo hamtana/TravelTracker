@@ -71,4 +71,18 @@ public class PatientController implements PatientsApi {
         return ResponseEntity.notFound().build();
     }
 
+    @Override
+    public ResponseEntity<Void> addPatientBooking(String nhi, Booking booking) {
+        Patient patient = patients.get(nhi);
+        if (patient != null) {
+            List<Booking> bookings = patient.getBookings();
+            if (bookings == null) {
+                bookings = new ArrayList<>();
+                patient.setBookings(bookings);
+            }
+            bookings.add(booking);
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
 }
