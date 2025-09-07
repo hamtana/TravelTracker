@@ -112,31 +112,6 @@ paths:
       description: Delete a patient by Id
       tags:
         - patients
-  '/patients/{nhi}/support-persons':
-    get:
-      summary: List support persons for a patient
-      parameters:
-        - name: nhi
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Support persons for patient
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/SupportPerson'
-        '404':
-          description: Patient Not Found
-      operationId: getPatientSupporters
-      description: Retrieve a patients supporters.
-      tags:
-        - patients
-        - support-persons
   /support-persons:
     get:
       summary: List all support persons
@@ -591,17 +566,8 @@ components:
             $ref: '#/components/schemas/Booking'
             x-stoplight:
               id: a8mk4cej7l0wm
-        supportPersons:
-          type: array
-          x-stoplight:
-            id: p9o3b2jmiyybe
-          items:
-            $ref: '#/components/schemas/SupportPerson'
-            x-stoplight:
-              id: y7gtdvpq5sd1z
       required:
         - nhi
-        - ntaNumber
         - firstName
         - surname
     SupportPerson:
@@ -643,11 +609,14 @@ components:
         bookingCreatedAt:
           type: string
           format: date-time
-        serviceProviderId:
-          type: integer
-        accommodationName:
-          type: string
-          maxLength: 50
+        serviceProvider:
+          $ref: '#/components/schemas/ServiceProvider'
+          x-stoplight:
+            id: zwt73mcuom7en
+        accommodation:
+          $ref: '#/components/schemas/Accommodation'
+          x-stoplight:
+            id: omsd7xtb6by5i
         supportPersons:
           type: array
           items:
@@ -658,8 +627,7 @@ components:
         - bookingStatus
         - estimatedCost
         - bookingCreatedAt
-        - serviceProviderId
-        - accommodationName
+        - serviceProvider
     ServiceProvider:
       type: object
       properties:

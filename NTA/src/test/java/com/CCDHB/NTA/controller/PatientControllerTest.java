@@ -1,46 +1,131 @@
 package com.CCDHB.NTA.controller;
 
+import com.CCDHB.model.Booking;
+import com.CCDHB.model.Patient;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
+import java.util.HashMap;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class PatientControllerTest {
 
+    HashMap<String, Patient> patients = new HashMap<>();
+    Patient patient = new Patient();
+    Patient patient2 = new Patient();
+    Patient patient3 = new Patient();
+
     @BeforeEach
     void setUp() {
+
+        patient.setNhi("ABC1234");
+        patient.setFirstName("John");
+        patient.setSurname("Doe");
+        patient.setNtaNumber("1234678");
+
+        patient2.setNhi("XYZ5678");
+        patient2.setFirstName("Jane");
+        patient2.setSurname("Smith");
+        patient2.setNtaNumber("8765432");
+
+        patient3.setNhi("LMN8901");
+        patient3.setFirstName("Alice");
+        patient3.setSurname("Johnson");
+        patient3.setNtaNumber("1122334");
+
+
     }
 
     @AfterEach
     void tearDown() {
+        patients.clear(); //remove the contents of the map after each test.
     }
 
     @Test
     void addPatient() {
+        patients.put(patient.getNhi(), patient);
+        patients.put(patient2.getNhi(), patient2);
+
+        assertThat(patients, hasKey("ABC1234"));
+        assertThat(patients, hasKey("XYZ5678"));
+        assertThat(patients, not(hasKey("LMN8901")));
+
     }
 
     @Test
     void deletePatientById() {
+
+        patients.put(patient.getNhi(), patient);
+        patients.put(patient2.getNhi(), patient2);
+
+        assertThat(patients, hasKey("ABC1234"));
+        assertThat(patients, hasKey("XYZ5678"));
+
+        patients.remove("ABC1234");
+
+        assertThat(patients, not(hasKey("ABC1234")));
+        assertThat(patients, hasKey("XYZ5678"));
     }
 
     @Test
     void getPatientById() {
+        patients.put(patient.getNhi(), patient);
+        patients.put(patient2.getNhi(), patient2);
+
+        assertThat(patients, hasKey("ABC1234"));
+        assertThat(patients, hasKey("XYZ5678"));
+
+        Patient retrievedPatient = patients.get("ABC1234");
+        assertNotNull(retrievedPatient);
+        assertEquals("John", retrievedPatient.getFirstName());
+        assertEquals("Doe", retrievedPatient.getSurname());
+
+        Patient nonExistentPatient = patients.get("LMN8901");
+        assertNull(nonExistentPatient);
     }
 
     @Test
     void getPatients() {
+        patients.put(patient.getNhi(), patient);
+        patients.put(patient2.getNhi(), patient2);
+
+        assertThat(patients.size(), is(2));
+        assertThat(patients.values(), containsInAnyOrder(patient, patient2));
     }
 
     @Test
     void updatePatientById() {
+        patients.put(patient.getNhi(), patient);
+        patients.put(patient2.getNhi(), patient2);
+
+        assertThat(patients, hasKey("ABC1234"));
+        assertThat(patients, hasKey("XYZ5678"));
+
+        // Update patient2's first name
+        Patient updatedPatient = new Patient();
+        updatedPatient.setNhi("XYZ5678");
+        updatedPatient.setFirstName("Janet");
+        updatedPatient.setSurname("Smith");
+        updatedPatient.setNtaNumber("8765432");
+
+        patients.put(updatedPatient.getNhi(), updatedPatient);
+
+        Patient retrievedPatient = patients.get("XYZ5678");
+        assertNotNull(retrievedPatient);
+        assertEquals("Janet", retrievedPatient.getFirstName());
+        assertEquals("Smith", retrievedPatient.getSurname());
     }
 
     @Test
     void getPatientBookings() {
-    }
 
-    @Test
-    void getPatientSupporters() {
+
+
+
     }
 }
