@@ -6,6 +6,10 @@ import jakarta.persistence.Embeddable;
 import java.io.Serializable;
 import java.util.Objects;
 
+/**
+ * Composite key class for BookedSupportPersonEntity.
+ * Provides equals and hashCode implementations, allows us to declare a composite primary key.
+ */
 @Embeddable
 public class BookedSupportPersonKey implements Serializable{
 

@@ -1,9 +1,14 @@
 package com.CCDHB.NTA.controller;
 
+import com.CCDHB.NTA.repository.PatientRepository;
 import com.CCDHB.model.*;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -15,9 +20,17 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+@SpringBootTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
+@Transactional
 class PatientControllerTest {
 
-    HashMap<String, Patient> patients = new HashMap<>();
+    // Using HashMap Local testing
+   //  HashMap<String, Patient> patients = new HashMap<>();
+
+    @Autowired
+    private PatientRepository patients;
+
     Patient patient = new Patient();
     Patient patient2 = new Patient();
     Patient patient3 = new Patient();

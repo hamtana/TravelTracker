@@ -1,0 +1,20 @@
+services:
+  postgres:
+    image: postgres
+    container_name: travel_db
+    environment:
+      POSTGRES_PASSWORD: secretpassword
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./db-init:/docker-entrypoint-initdb.d
+    networks:
+      - travel_network
+
+volumes:
+  postgres_data:
+ 
+networks:
+  travel_network:
