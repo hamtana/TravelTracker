@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.HashMap;
+import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -25,6 +26,7 @@ class PatientControllerTest {
     ServiceProvider serviceProvider1 = new ServiceProvider();
     Accommodation accommodation1 = new Accommodation();
     SupportPerson supportPerson1 = new SupportPerson();
+    BookedSupportPerson bsp = new BookedSupportPerson();
 
     @BeforeEach
     void setUp() {
@@ -51,11 +53,15 @@ class PatientControllerTest {
         accommodation1.setAddress("456 Stay Ave, Comfort Town");
         accommodation1.setName("Comfort Inn");
 
+        // Creating Support person
         supportPerson1.setId(1);
         supportPerson1.setFirstName("Emily");
         supportPerson1.setSurname("Brown");
         supportPerson1.setCoveredByNta(true);
         supportPerson1.setPatient(patient);
+
+        // assigning support person as Booked Support Person
+        bsp.setSupportPerson(supportPerson1);
 
         booking1.setId(1);
         booking1.setDateOfDeparture(LocalDate.of(2025, 9, 15));
@@ -66,10 +72,10 @@ class PatientControllerTest {
         booking1.setBookingCreatedAt(OffsetDateTime.now());
         booking1.setServiceProvider(serviceProvider1);
         booking1.setAccommodation(accommodation1);
+        booking1.setDestination("Auckland");
+        booking1.setSupportPersons(List.of(bsp));
 
-
-
-
+        patient.setBookings(List.of(booking1));
 
 
     }
@@ -157,6 +163,16 @@ class PatientControllerTest {
     @Test
     void getPatientBookings() {
 
+        patients.put(patient.getNhi(), patient);
+        patients.put(patient2.getNhi(), patient2);
+
+        Patient retrievedPatient = patients.get("ABC1234");
+        assertNotNull(retrievedPatient);
+
+        List<Booking> bookings = retrievedPatient.getBookings();
+        assertNotNull(bookings);
+        assertThat(bookings.size(), is(1));
+        assertThat(bookings, contains(booking1));
 
 
 
