@@ -7,12 +7,13 @@ import java.util.List;
 @Table(name = "BookedSupportPerson")
 public class BookedSupportPersonEntity {
 
-    @Id
+    @EmbeddedId
+    private BookedSupportPersonKey id;
+
     @ManyToOne
     @JoinColumn(name = "bookingId", nullable = false)
     private BookingEntity booking;
 
-    @Id
     @ManyToOne
     @JoinColumn(name = "supportPersonId", nullable = false)
     private SupportPersonEntity supportPerson;
