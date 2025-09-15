@@ -608,6 +608,10 @@ components:
           maxLength: 30
         coveredByNta:
           type: boolean
+        patient:
+          $ref: '#/components/schemas/Patient'
+          x-stoplight:
+            id: sv805lhoqkij2
       required:
         - id
         - firstName
@@ -625,6 +629,10 @@ components:
           type: string
           format: date
           nullable: true
+        destination:
+          type: string
+          x-stoplight:
+            id: 9ralr1tinlcdr
         bookingStatus:
           type: string
           maxLength: 15
@@ -650,7 +658,7 @@ components:
         supportPersons:
           type: array
           items:
-            $ref: '#/components/schemas/SupportPerson'
+            $ref: '#/components/schemas/BookedSupportPerson'
       required:
         - id
         - dateOfDeparture
@@ -685,6 +693,16 @@ components:
       required:
         - address
         - name
+    BookedSupportPerson:
+      title: BookedSupportPerson
+      x-stoplight:
+        id: wjwp2ksall9pj
+      type: object
+      properties:
+        supportPerson:
+          $ref: '#/components/schemas/SupportPerson'
+          x-stoplight:
+            id: w5a3zm38w0tjk
 tags:
   - name: accommodations
   - name: bookings

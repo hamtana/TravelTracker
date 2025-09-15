@@ -1,12 +1,13 @@
 package com.CCDHB.NTA.controller;
 
-import com.CCDHB.model.Booking;
-import com.CCDHB.model.Patient;
+import com.CCDHB.model.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.HashMap;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -19,6 +20,11 @@ class PatientControllerTest {
     Patient patient = new Patient();
     Patient patient2 = new Patient();
     Patient patient3 = new Patient();
+
+    Booking booking1 = new Booking();
+    ServiceProvider serviceProvider1 = new ServiceProvider();
+    Accommodation accommodation1 = new Accommodation();
+    SupportPerson supportPerson1 = new SupportPerson();
 
     @BeforeEach
     void setUp() {
@@ -37,6 +43,33 @@ class PatientControllerTest {
         patient3.setFirstName("Alice");
         patient3.setSurname("Johnson");
         patient3.setNtaNumber("1122334");
+
+        serviceProvider1.setId(1);
+        serviceProvider1.setName("Health Services Ltd");
+        serviceProvider1.setAddress("123 Health St, Wellness City");
+
+        accommodation1.setAddress("456 Stay Ave, Comfort Town");
+        accommodation1.setName("Comfort Inn");
+
+        supportPerson1.setId(1);
+        supportPerson1.setFirstName("Emily");
+        supportPerson1.setSurname("Brown");
+        supportPerson1.setCoveredByNta(true);
+        supportPerson1.setPatient(patient);
+
+        booking1.setId(1);
+        booking1.setDateOfDeparture(LocalDate.of(2025, 9, 15));
+        booking1.setDateOfReturn(LocalDate.of(2025, 9, 20));
+        booking1.setBookingStatus("Completed");
+        booking1.setEstimatedCost(1500.0f);
+        booking1.setEstimatedCostForPatient(0.0f);
+        booking1.setBookingCreatedAt(OffsetDateTime.now());
+        booking1.setServiceProvider(serviceProvider1);
+        booking1.setAccommodation(accommodation1);
+
+
+
+
 
 
     }
