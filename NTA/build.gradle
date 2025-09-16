@@ -27,7 +27,7 @@ dependencies {
     // jakarta Persistence
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
-    // OpenAPI / Swagger Annotatiions
+    // OpenAPI / Swagger Annotations
     implementation 'io.swagger.core.v3:swagger-core:2.2.22'
 
     // OpenAPI / Swagger Annotations
@@ -39,6 +39,12 @@ dependencies {
     // Jakarta Annotations
     compileOnly 'jakarta.annotation:jakarta.annotation-api:2.1.1'
     annotationProcessor 'jakarta.annotation:jakarta.annotation-api:2.1.1'
+
+    //Mapper
+    // MapStruct runtime
+    implementation 'org.mapstruct:mapstruct:1.5.5.Final'
+    // MapStruct annotation processor (generates the mapper code)
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.assertj:assertj-core:3.6.1'
