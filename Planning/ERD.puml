@@ -56,7 +56,6 @@ Class Booking_Support_Person {
 
 Patient ||--{Booking
 Booking }--|| Service_Provider
-Patient ||--o{ Support_Person
 Booking ||--o{ Booking_Support_Person
 Support_Person ||--o{ Booking_Support_Person
 Booking }--|| Accommodation

@@ -7,9 +7,6 @@ CREATE DATABASE "TravelManagement" OWNER travel_user;
 -- Grant privileges
 GRANT ALL PRIVILEGES ON DATABASE "TravelManagement" TO travel_user;
 
--- Connect to the new database
-\connect "TravelManagement"
-
 -- Patient table
 CREATE TABLE Patient (
     nhi VARCHAR(7) PRIMARY KEY,
