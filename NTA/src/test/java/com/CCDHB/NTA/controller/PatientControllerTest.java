@@ -1,8 +1,19 @@
 package com.CCDHB.NTA.controller;
 
+import com.CCDHB.NTA.entity.BookingEntity;
+import com.CCDHB.NTA.entity.PatientEntity;
+import com.CCDHB.NTA.entity.ServiceProviderEntity;
+import com.CCDHB.NTA.mapper.AccommodationMapper;
+import com.CCDHB.NTA.mapper.BookingMapper;
+import com.CCDHB.NTA.mapper.PatientMapper;
+import com.CCDHB.NTA.mapper.ServiceProviderMapper;
+import com.CCDHB.NTA.repository.AccommodationRepository;
+import com.CCDHB.NTA.repository.BookingRepository;
 import com.CCDHB.NTA.repository.PatientRepository;
+import com.CCDHB.NTA.repository.ServiceProviderRepository;
 import com.CCDHB.model.*;
 import jakarta.transaction.Transactional;
+import net.bytebuddy.pool.TypePool;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,6 +26,7 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -29,7 +41,24 @@ class PatientControllerTest {
    //  HashMap<String, Patient> patients = new HashMap<>();
 
     @Autowired
-    private PatientRepository patients;
+    private PatientRepository patientRepository;
+
+    @Autowired
+    private PatientMapper patientMapper;
+
+    @Autowired
+    private BookingRepository bookingRepository;
+
+    @Autowired
+    private BookingMapper bookingMapper;
+
+    @Autowired
+    private ServiceProviderRepository serviceProviderRepository;
+
+    @Autowired
+    private ServiceProviderMapper serviceProviderMapper;
+
+    // For the purposes of this test, we are not using accommodation or adding Support Persons.
 
     Patient patient = new Patient();
     Patient patient2 = new Patient();
@@ -37,9 +66,7 @@ class PatientControllerTest {
 
     Booking booking1 = new Booking();
     ServiceProvider serviceProvider1 = new ServiceProvider();
-    Accommodation accommodation1 = new Accommodation();
-    SupportPerson supportPerson1 = new SupportPerson();
-    BookedSupportPerson bsp = new BookedSupportPerson();
+    ServiceProviderEntity savedServiceProvider = new ServiceProviderEntity();
 
     @BeforeEach
     void setUp() {
@@ -59,24 +86,14 @@ class PatientControllerTest {
         patient3.setSurname("Johnson");
         patient3.setNtaNumber("1122334");
 
-        serviceProvider1.setId(1);
         serviceProvider1.setName("Health Services Ltd");
         serviceProvider1.setAddress("123 Health St, Wellness City");
 
-        accommodation1.setAddress("456 Stay Ave, Comfort Town");
-        accommodation1.setName("Comfort Inn");
+        // Save and reassign the managed entity
+        savedServiceProvider = serviceProviderRepository.save(
+                serviceProviderMapper.toEntity(serviceProvider1)
+        );
 
-        // Creating Support person
-        supportPerson1.setId(1);
-        supportPerson1.setFirstName("Emily");
-        supportPerson1.setSurname("Brown");
-        supportPerson1.setCoveredByNta(true);
-        supportPerson1.setPatient(patient);
-
-        // assigning support person as Booked Support Person
-        bsp.setSupportPerson(supportPerson1);
-
-        booking1.setId(1);
         booking1.setDateOfDeparture(LocalDate.of(2025, 9, 15));
         booking1.setDateOfReturn(LocalDate.of(2025, 9, 20));
         booking1.setBookingStatus("Completed");
@@ -84,110 +101,105 @@ class PatientControllerTest {
         booking1.setEstimatedCostForPatient(0.0f);
         booking1.setBookingCreatedAt(OffsetDateTime.now());
         booking1.setServiceProvider(serviceProvider1);
-        booking1.setAccommodation(accommodation1);
         booking1.setDestination("Auckland");
-        booking1.setSupportPersons(List.of(bsp));
 
-        patient.setBookings(List.of(booking1));
+
 
 
     }
 
     @AfterEach
     void tearDown() {
-        patients.clear(); //remove the contents of the map after each test.
+        patientRepository.deleteAll();
     }
 
     @Test
     void addPatient() {
-        patients.put(patient.getNhi(), patient);
-        patients.put(patient2.getNhi(), patient2);
 
-        assertThat(patients, hasKey("ABC1234"));
-        assertThat(patients, hasKey("XYZ5678"));
-        assertThat(patients, not(hasKey("LMN8901")));
+        //patient.setBookings(List.of(booking1));
+        //booking1.setServiceProvider(serviceProviderMapper.toDto(savedServiceProvider));
 
+        PatientEntity patientEntity = patientMapper.toEntity(patient);
+        patientRepository.save(patientEntity);
+        patientRepository.save(patientMapper.toEntity(patient2));
+
+        List<PatientEntity> patientEntities = patientRepository.findAll();
+
+        assertThat(patientEntities.size(), is(2));;
     }
 
     @Test
     void deletePatientById() {
+        patientRepository.save(patientMapper.toEntity(patient));
+        patientRepository.save(patientMapper.toEntity(patient2));
 
-        patients.put(patient.getNhi(), patient);
-        patients.put(patient2.getNhi(), patient2);
+        assertThat(patientRepository.findAll().size(), is(2));
 
-        assertThat(patients, hasKey("ABC1234"));
-        assertThat(patients, hasKey("XYZ5678"));
+        patientRepository.deleteById(patient.getNhi());
 
-        patients.remove("ABC1234");
-
-        assertThat(patients, not(hasKey("ABC1234")));
-        assertThat(patients, hasKey("XYZ5678"));
+        assertThat(patientRepository.findAll().size(), is(1));
+        // Check that
+        assertThat(patientRepository.findById(patient3.getNhi()), is(Optional.empty()));
     }
 
     @Test
     void getPatientById() {
-        patients.put(patient.getNhi(), patient);
-        patients.put(patient2.getNhi(), patient2);
+        patientRepository.save(patientMapper.toEntity(patient));
+        patientRepository.save(patientMapper.toEntity(patient2));
 
-        assertThat(patients, hasKey("ABC1234"));
-        assertThat(patients, hasKey("XYZ5678"));
-
-        Patient retrievedPatient = patients.get("ABC1234");
-        assertNotNull(retrievedPatient);
-        assertEquals("John", retrievedPatient.getFirstName());
-        assertEquals("Doe", retrievedPatient.getSurname());
-
-        Patient nonExistentPatient = patients.get("LMN8901");
-        assertNull(nonExistentPatient);
+        Optional <PatientEntity> retrievedPatient = patientRepository.findById(patient.getNhi());
+        assertThat(retrievedPatient.isPresent(), is(true));
+        assertThat(retrievedPatient.get().getFirstName(), is("John"));
     }
 
     @Test
     void getPatients() {
-        patients.put(patient.getNhi(), patient);
-        patients.put(patient2.getNhi(), patient2);
+        patientRepository.save(patientMapper.toEntity(patient));
+        patientRepository.save(patientMapper.toEntity(patient2));
+        patientRepository.save(patientMapper.toEntity(patient3));
 
-        assertThat(patients.size(), is(2));
-        assertThat(patients.values(), containsInAnyOrder(patient, patient2));
+        List<PatientEntity> patientEntities = patientRepository.findAll();
+        assertThat(patientEntities.size(), is(3));
+        assertThat(patientEntities, hasItem(
+                allOf(
+                        hasProperty("nhi", is("ABC1234")),
+                        hasProperty("firstName", is("John")),
+                        hasProperty("surname", is("Doe"))
+                )
+        ));
     }
 
     @Test
     void updatePatientById() {
-        patients.put(patient.getNhi(), patient);
-        patients.put(patient2.getNhi(), patient2);
+        patientRepository.save(patientMapper.toEntity(patient));
+        patientRepository.save(patientMapper.toEntity(patient2));
 
-        assertThat(patients, hasKey("ABC1234"));
-        assertThat(patients, hasKey("XYZ5678"));
+        Optional <PatientEntity> retrievedPatient = patientRepository.findById(patient.getNhi());
+        assertThat(retrievedPatient.isPresent(), is(true));
+        assertThat(retrievedPatient.get().getFirstName(), is("John"));
 
-        // Update patient2's first name
-        Patient updatedPatient = new Patient();
-        updatedPatient.setNhi("XYZ5678");
-        updatedPatient.setFirstName("Janet");
-        updatedPatient.setSurname("Smith");
-        updatedPatient.setNtaNumber("8765432");
+        // Update the patient's first name
+        retrievedPatient.get().setFirstName("Jonathan");
+        patientRepository.save(retrievedPatient.get());
 
-        patients.put(updatedPatient.getNhi(), updatedPatient);
-
-        Patient retrievedPatient = patients.get("XYZ5678");
-        assertNotNull(retrievedPatient);
-        assertEquals("Janet", retrievedPatient.getFirstName());
-        assertEquals("Smith", retrievedPatient.getSurname());
+        Optional <PatientEntity> updatedPatient = patientRepository.findById(patient.getNhi());
+        assertThat(updatedPatient.isPresent(), is(true));
+        assertThat(updatedPatient.get().getFirstName(), is("Jonathan"));
     }
 
     @Test
     void getPatientBookings() {
+        patientRepository.save(patientMapper.toEntity(patient));
+        patientRepository.save(patientMapper.toEntity(patient2));
 
-        patients.put(patient.getNhi(), patient);
-        patients.put(patient2.getNhi(), patient2);
+        // Link the booking to the patient
+        BookingEntity bookingEntity = bookingMapper.toEntity(booking1);
+        bookingEntity.setPatient(patientMapper.toEntity(patient));
+        bookingEntity.setServiceProvider(savedServiceProvider); // Link the managed entity
+        bookingRepository.save(bookingEntity);
 
-        Patient retrievedPatient = patients.get("ABC1234");
-        assertNotNull(retrievedPatient);
-
-        List<Booking> bookings = retrievedPatient.getBookings();
-        assertNotNull(bookings);
+        List<BookingEntity> bookings = bookingRepository.findByPatientNhi(patient.getNhi());
         assertThat(bookings.size(), is(1));
-        assertThat(bookings, contains(booking1));
-
-
-
+        assertThat(bookings.get(0).getDestination(), is("Auckland"));
     }
 }

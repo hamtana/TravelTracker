@@ -7,7 +7,7 @@ import java.util.List;
 @Table(name = "Patient")
 public class PatientEntity {
     @Id
-    @Column(name = "nhi", nullable = false, unique = true, length = 3)
+    @Column(name = "nhi", nullable = false, unique = true, length = 7)
     private String nhi;
 
     @Column(name = "ntaNumber")
