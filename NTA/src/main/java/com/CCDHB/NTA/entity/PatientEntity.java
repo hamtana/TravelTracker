@@ -10,7 +10,7 @@ public class PatientEntity {
     @Column(name = "nhi", nullable = false, unique = true, length = 7)
     private String nhi;
 
-    @Column(name = "ntaNumber")
+    @Column(name = "ntaNumber", unique = true, length = 7)
     private String ntaNumber;
 
     @Column(name = "firstName", nullable = false)

@@ -14,6 +14,7 @@ import org.springframework.web.context.request.NativeWebRequest;
 
 import java.util.*;
 
+@RestController
 public class BookingController implements BookingsApi {
 
     //private final Map<Integer, Booking> bookings = new HashMap<>();
