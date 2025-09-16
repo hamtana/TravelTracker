@@ -5,6 +5,6 @@ import com.CCDHB.NTA.entity.BookingEntity;
 
 import java.util.List;
 
-public interface BookingRepository extends JpaRepository<BookingEntity, String> {
+public interface BookingRepository extends JpaRepository<BookingEntity, Integer> {
     List<BookingEntity> findByPatientNhi(String nhi);
 }

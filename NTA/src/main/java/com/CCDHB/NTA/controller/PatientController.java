@@ -8,7 +8,6 @@ import com.CCDHB.NTA.repository.BookingRepository;
 import com.CCDHB.NTA.repository.PatientRepository;
 import com.CCDHB.model.Patient;
 import com.CCDHB.model.Booking;
-import com.CCDHB.model.SupportPerson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
