@@ -1,24 +1,26 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/clerk-react';
-
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Home } from "./pages/home";
+import { NotFound } from "./pages/NotFound";
+import "./App.css";
+import Patients from "./pages/patients";
+import Bookings from "./pages/bookings";
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <header>
-      <SignedOut>
-        <SignInButton />
-      </SignedOut>
-      <SignedIn>
-        <UserButton />
-      </SignedIn>
-    </header>
+    <>
+      <BrowserRouter>
+        <Routes>
+          <Route index element={<Home />} />
+          <Route path="/patients" element={<Patients />} />
+          <Route path="/bookings" element={<Bookings />} />
+          <Route path="*" element={<NotFound />} />
+       
+        </Routes> 
+      
+      </BrowserRouter>
     
-  )
+    </>
+  );
 }
 
-export default App
+export default App;
