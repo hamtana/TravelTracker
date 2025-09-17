@@ -10,7 +10,9 @@ const navItems = [
   { name: "Patients", href: "/patients" },
   { name: "Bookings", href: "/bookings" },
   { name: "Support Persons", href: "#SupportPersons" },
+    { name: "Service Providers", href: "#serviceproviders" },
   { name: "Contact", href: "#contact" },
+
 ];
 
 export const Navbar = () => {
