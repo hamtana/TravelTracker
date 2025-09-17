@@ -1,5 +1,5 @@
 
-import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/clerk-react'
+import { SignedIn, SignedOut } from '@clerk/clerk-react'
 import { Navbar } from '../components/Navbar'
 
 export function Bookings() {

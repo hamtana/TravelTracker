@@ -6,10 +6,10 @@ import { Menu, X } from "lucide-react";
 import { SignedOut, SignInButton, SignedIn, UserButton } from "@clerk/clerk-react";
 
 const navItems = [
-  { name: "Home", href: "#home" },
-  { name: "Patients", href: "#about" },
-  { name: "Bookings", href: "#skills" },
-  { name: "Support Persons", href: "#projects" },
+  { name: "Home", href: "/" },
+  { name: "Patients", href: "/patients" },
+  { name: "Bookings", href: "/bookings" },
+  { name: "Support Persons", href: "#SupportPersons" },
   { name: "Contact", href: "#contact" },
 ];
 
@@ -60,7 +60,7 @@ export const Navbar = () => {
             <SignInButton mode="modal" />
           </SignedOut>
           <SignedIn>
-            <UserButton afterSignOutUrl="/" />
+            <UserButton />
           </SignedIn>
         </div>
 

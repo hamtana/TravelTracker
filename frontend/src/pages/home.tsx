@@ -1,11 +1,15 @@
 
-import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/clerk-react'
+import { SignedIn, SignedOut } from '@clerk/clerk-react'
 import { Navbar } from '../components/Navbar'
+import { ThemeToggle } from '../components/ThemeToggle'
 
 export function Home() {
   return (
-    <div>
+    <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
       <main>
+          {/* Theme toggle */}
+         <ThemeToggle/>
+
         <Navbar />
         <SignedOut>
           <h2>Please sign in to continue</h2>
