@@ -2,6 +2,7 @@ package com.CCDHB.api;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.NativeWebRequest;
 
@@ -10,6 +11,7 @@ import com.CCDHB.model.Accommodation;
 import java.util.*;
 
 @RestController
+@CrossOrigin(origins = "*") // Allow requests from any origin
 public class AccommodationController implements AccommodationsApi {
 
     private final HashMap<String, Accommodation> accommodations = new HashMap<>();

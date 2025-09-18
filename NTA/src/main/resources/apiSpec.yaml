@@ -591,6 +591,14 @@ components:
             $ref: '#/components/schemas/Booking'
             x-stoplight:
               id: a8mk4cej7l0wm
+        notes:
+          type: array
+          x-stoplight:
+            id: a5b9uo2h5tn2b
+          items:
+            $ref: '#/components/schemas/Note'
+            x-stoplight:
+              id: 7118i73waf800
       required:
         - nhi
         - firstName
@@ -659,6 +667,14 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/BookedSupportPerson'
+        notes:
+          x-stoplight:
+            id: q1n5a1szwt3d5
+          type: array
+          items:
+            $ref: '#/components/schemas/Note'
+            x-stoplight:
+              id: 0wfqry889bsg8
       required:
         - id
         - dateOfDeparture
@@ -703,6 +719,19 @@ components:
           $ref: '#/components/schemas/SupportPerson'
           x-stoplight:
             id: w5a3zm38w0tjk
+    Note:
+      title: Note
+      x-stoplight:
+        id: t1hhkqpm11vef
+      type: object
+      properties:
+        id:
+          type: string
+        message:
+          type: string
+          x-stoplight:
+            id: bm45upjpx1c6g
+      description: Notes Model
 tags:
   - name: accommodations
   - name: bookings

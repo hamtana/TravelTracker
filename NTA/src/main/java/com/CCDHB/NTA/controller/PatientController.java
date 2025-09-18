@@ -20,6 +20,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @RestController
+@CrossOrigin(origins = "*") // Allow requests from any origin
 public class PatientController implements PatientsApi {
 
     // Follows the API Specification PatientApi interface

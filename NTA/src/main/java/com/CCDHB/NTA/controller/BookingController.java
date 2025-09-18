@@ -9,12 +9,14 @@ import com.CCDHB.model.SupportPerson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.NativeWebRequest;
 
 import java.util.*;
 
 @RestController
+@CrossOrigin(origins = "*") // Allow requests from any origin
 public class BookingController implements BookingsApi {
 
     //private final Map<Integer, Booking> bookings = new HashMap<>();

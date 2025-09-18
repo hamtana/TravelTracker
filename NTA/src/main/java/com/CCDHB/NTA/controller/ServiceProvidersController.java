@@ -2,6 +2,7 @@ package com.CCDHB.api;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 import com.CCDHB.model.ServiceProvider;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -12,6 +13,7 @@ import java.util.Optional;
 
 
 @RestController
+@CrossOrigin(origins = "*") // Allow requests from any origin
 public class ServiceProvidersController implements ServiceProvidersApi {
 
     // Implement the methods defined in ServiceProvidersApi here

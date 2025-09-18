@@ -3,12 +3,14 @@ package com.CCDHB.api;
 import com.CCDHB.model.SupportPerson;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "*") // Allow requests from any origin
 public class SupportPersonsController implements SupportPersonsApi {
 
     private final HashMap<Integer, SupportPerson> supportPersons = new HashMap<>();
