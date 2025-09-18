@@ -46,6 +46,9 @@ public class BookingEntity {
     @JoinColumn(name = "accommodationAddress")
     private AccommodationEntity accommodation;
 
+    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<NoteEntity> notes;
+
     public Integer getId() {
         return id;
     }
@@ -80,6 +83,14 @@ public class BookingEntity {
 
     public String getDestination() {
         return destination;
+    }
+
+    public List<NoteEntity> getNotes() {
+        return notes;
+    }
+
+    public void setNotes(List<NoteEntity> notes) {
+        this.notes = notes;
     }
 
     public void setDestination(String destination) {
