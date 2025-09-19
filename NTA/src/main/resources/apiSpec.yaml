@@ -924,8 +924,17 @@ components:
           type: string
           x-stoplight:
             id: bm45upjpx1c6g
+        booking:
+          $ref: '#/components/schemas/Booking'
+          x-stoplight:
+            id: k5x237crt9duh
+        patient:
+          $ref: '#/components/schemas/Patient'
+          x-stoplight:
+            id: 3qjg5h0ofe2ju
       required:
         - id
+        - message
     PatientServiceProvider:
       title: PatientServiceProvider
       x-stoplight:
@@ -944,14 +953,6 @@ components:
           type: string
           x-stoplight:
             id: pqjt85fm823dg
-        notes:
-          x-stoplight:
-            id: jza4ss9apt5w1
-          type: array
-          items:
-            $ref: '#/components/schemas/Note'
-            x-stoplight:
-              id: ucn7lfvwxa9u1
       required:
         - id
         - serviceProvider

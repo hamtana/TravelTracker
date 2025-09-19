@@ -3,6 +3,7 @@ package com.CCDHB.NTA.entity;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "Note")
 public class NoteEntity {
 
     @Id
@@ -11,6 +12,14 @@ public class NoteEntity {
 
     @Column(name="message", nullable = false)
     private String message;
+
+    @ManyToOne
+    @JoinColumn(name = "booking")
+    private BookingEntity booking;
+
+    @ManyToOne
+    @JoinColumn(name = "patient")
+    private PatientEntity patient;
 
     public String getId() {
         return id;

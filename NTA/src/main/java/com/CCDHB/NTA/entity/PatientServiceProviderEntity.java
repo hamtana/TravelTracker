@@ -1,12 +1,14 @@
 package com.CCDHB.NTA.entity;
 
-import com.CCDHB.model.ServiceProvider;
+
+import com.CCDHB.NTA.entity.ServiceProviderEntity;
 import jakarta.persistence.*;
 
 import java.util.List;
 
 
 @Entity
+@Table(name = "PatientServiceProvider")
 public class PatientServiceProviderEntity {
 
     @Id
@@ -15,13 +17,15 @@ public class PatientServiceProviderEntity {
 
     @ManyToOne
     @JoinColumn(name= "serviceProviderId", nullable = false)
-    private ServiceProvider serviceProvider;
+    private ServiceProviderEntity serviceProvider;
 
     @Column(name = "frequency", nullable = false)
     private String frequency;
 
-    @OneToMany(mappedBy = "patientServiceProvider", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<NoteEntity> notes;
+    @ManyToOne
+    @JoinColumn(name = "patient", nullable = false)
+    private PatientEntity patient;
+
 
     public String getId() {
         return id;
@@ -31,11 +35,11 @@ public class PatientServiceProviderEntity {
         this.id = id;
     }
 
-    public ServiceProvider getServiceProvider() {
+    public ServiceProviderEntity getServiceProvider() {
         return serviceProvider;
     }
 
-    public void setServiceProvider(ServiceProvider serviceProvider) {
+    public void setServiceProvider(ServiceProviderEntity serviceProvider) {
         this.serviceProvider = serviceProvider;
     }
 
@@ -47,11 +51,6 @@ public class PatientServiceProviderEntity {
         this.frequency = frequency;
     }
 
-    public List<NoteEntity> getNotes() {
-        return notes;
-    }
 
-    public void setNotes(List<NoteEntity> notes) {
-        this.notes = notes;
-    }
+
 }

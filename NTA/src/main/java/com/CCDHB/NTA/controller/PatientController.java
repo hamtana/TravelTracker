@@ -282,11 +282,6 @@ public class PatientController implements PatientsApi {
 
         // Update fields (expand if you have more)
         serviceProviderEntity.setFrequency(patientServiceProvider.getFrequency());
-        serviceProviderEntity.setNotes(
-                patientServiceProvider.getNotes().stream()
-                        .map(noteMapper::toEntity)
-                        .toList()
-        );
 
         // If PatientServiceProviderEntity is managed by cascade on PatientEntity
         patientRepository.save(patientEntity);
