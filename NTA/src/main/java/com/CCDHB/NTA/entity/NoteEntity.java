@@ -7,10 +7,10 @@ public class NoteEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    String id;
+    private String id;
 
     @Column(name="message", nullable = false)
-    String message;
+    private String message;
 
     public String getId() {
         return id;

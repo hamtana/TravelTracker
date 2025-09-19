@@ -112,6 +112,190 @@ paths:
       description: Delete a patient by Id
       tags:
         - patients
+  '/patients/{nhi}/bookings':
+    get:
+      summary: List bookings for a patient
+      parameters:
+        - name: nhi
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Bookings for patient
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Booking'
+        '404':
+          description: Patient Not Found
+      operationId: getPatientBookings
+      description: Retrieve Patients Bookings.
+      tags:
+        - patients
+        - bookings
+    post:
+      summary: ''
+      operationId: addPatientBooking
+      responses:
+        '201':
+          description: Created New Booking
+        '409':
+          description: Booking already exists
+      description: Add a New Booking for a Patient
+      tags:
+        - patients
+        - bookings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Booking'
+        description: ''
+      parameters: []
+    parameters:
+      - schema:
+          type: string
+        name: nhi
+        in: path
+        required: true
+  '/patients/{nhi}/notes':
+    parameters:
+      - schema:
+          type: string
+        name: nhi
+        in: path
+        required: true
+    get:
+      summary: Get Patient Notes
+      tags:
+        - patients
+        - notes
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Note'
+                  x-stoplight:
+                    id: 2a85g235hqwzg
+        '404':
+          description: Patient Not Found
+      operationId: getPatientNotes
+      description: Retrieve Patient Notes
+    post:
+      summary: Add a Patient Note
+      operationId: addPatientNote
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Patient Not Found
+      description: Add a Patient Note
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Note'
+        description: ''
+      tags:
+        - patients
+        - notes
+  '/patients/{nhi}/patient-service-providers':
+    parameters:
+      - schema:
+          type: string
+        name: nhi
+        in: path
+        required: true
+    get:
+      summary: GET a Patient's Service Providers
+      tags:
+        - patients
+        - service-providers
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PatientServiceProvider'
+                  x-stoplight:
+                    id: 6ysw2piuel2ds
+        '404':
+          description: Patient Not Found
+      operationId: getPatientServiceProviders
+      description: Retrieve Patient Support providers
+    post:
+      summary: POST a Patient Service Providers
+      operationId: addPatientServiceProvider
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Patient Not Found
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatientServiceProvider'
+      description: Add a Patient Support Provider
+      tags:
+        - service-providers
+        - patients
+  '/patients/{nhi}/patient-service-providers/{id}':
+    parameters:
+      - schema:
+          type: string
+        name: nhi
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: id
+        in: path
+        required: true
+    get:
+      summary: GET Patient Service Provider
+      tags:
+        - patients
+        - service-providers
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PatientServiceProvider'
+        '404':
+          description: Patient Not Found
+      operationId: getPatientServiceProvider
+      description: Retrieve a Patient Service Provider
+    put:
+      summary: Update Patient Service Provider
+      operationId: updatePatientServiceProvider
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Service Provider or Patient Not Found
+      description: Update Patient Service Provider
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatientServiceProvider'
+      tags:
+        - patients
+        - service-providers
   /support-persons:
     get:
       summary: List all support persons
@@ -322,56 +506,51 @@ paths:
       description: Delete Booking by Id
       tags:
         - bookings
-  '/patients/{nhi}/bookings':
+  '/bookings/{id}/notes':
+    parameters:
+      - schema:
+          type: string
+        name: id
+        in: path
+        required: true
     get:
-      summary: List bookings for a patient
-      parameters:
-        - name: nhi
-          in: path
-          required: true
-          schema:
-            type: string
+      summary: Get Booking Notes
+      tags:
+        - bookings
+        - notes
       responses:
-        '200':
-          description: Bookings for patient
+        '204':
+          description: No Content
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Booking'
+                  $ref: '#/components/schemas/Note'
+                  x-stoplight:
+                    id: ke80m2f0zdq17
         '404':
-          description: Patient Not Found
-      operationId: getPatientBookings
-      description: Retrieve Patients Bookings.
-      tags:
-        - patients
-        - bookings
+          description: Booking Not Found
+      operationId: getBookingNotes
+      description: Retrieve the Booking Notes for a booking
     post:
-      summary: ''
-      operationId: addPatientBooking
+      summary: Add Booking Note
+      operationId: addBookingNote
       responses:
-        '201':
-          description: Created New Booking
-        '409':
-          description: Booking already exists
-      description: Add a New Booking for a Patient
-      tags:
-        - patients
-        - bookings
+        '200':
+          description: OK
+          content: {}
+        '404':
+          description: Booking Not Found
+      description: Add a Note to Booking
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Booking'
-        description: ''
-      parameters: []
-    parameters:
-      - schema:
-          type: string
-        name: nhi
-        in: path
-        required: true
+              $ref: '#/components/schemas/Note'
+      tags:
+        - bookings
+        - notes
   /service-providers:
     get:
       summary: List all service providers
@@ -599,6 +778,14 @@ components:
             $ref: '#/components/schemas/Note'
             x-stoplight:
               id: 7118i73waf800
+        supportProviders:
+          x-stoplight:
+            id: tu0kke7d8sy77
+          type: array
+          items:
+            $ref: '#/components/schemas/PatientServiceProvider'
+            x-stoplight:
+              id: 0i20xl1qen82s
       required:
         - nhi
         - firstName
@@ -700,6 +887,10 @@ components:
     Accommodation:
       type: object
       properties:
+        id:
+          type: string
+          x-stoplight:
+            id: yovnfoyse44ug
         address:
           type: string
           maxLength: 100
@@ -707,6 +898,7 @@ components:
           type: string
           maxLength: 50
       required:
+        - id
         - address
         - name
     BookedSupportPerson:
@@ -724,6 +916,7 @@ components:
       x-stoplight:
         id: t1hhkqpm11vef
       type: object
+      description: Notes Model
       properties:
         id:
           type: string
@@ -731,10 +924,42 @@ components:
           type: string
           x-stoplight:
             id: bm45upjpx1c6g
-      description: Notes Model
+      required:
+        - id
+    PatientServiceProvider:
+      title: PatientServiceProvider
+      x-stoplight:
+        id: ya45sz5s3ky2n
+      type: object
+      properties:
+        id:
+          type: string
+          x-stoplight:
+            id: 8tjjqoynmkgdq
+        serviceProvider:
+          $ref: '#/components/schemas/ServiceProvider'
+          x-stoplight:
+            id: gaxqo9yozbgo0
+        frequency:
+          type: string
+          x-stoplight:
+            id: pqjt85fm823dg
+        notes:
+          x-stoplight:
+            id: jza4ss9apt5w1
+          type: array
+          items:
+            $ref: '#/components/schemas/Note'
+            x-stoplight:
+              id: ucn7lfvwxa9u1
+      required:
+        - id
+        - serviceProvider
+        - frequency
 tags:
   - name: accommodations
   - name: bookings
+  - name: notes
   - name: patients
   - name: service-providers
   - name: support-persons
