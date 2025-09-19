@@ -25,8 +25,18 @@ public class PatientEntity {
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<NoteEntity> notes;
 
-    // Getters and Setters
+    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PatientServiceProviderEntity> patientServiceProviders;
 
+    public List<PatientServiceProviderEntity> getPatientServiceProviders() {
+        return patientServiceProviders;
+    }
+
+    public void setPatientServiceProviders(List<PatientServiceProviderEntity> patientServiceProviders) {
+        this.patientServiceProviders = patientServiceProviders;
+    }
+
+    // Getters and Setters
 
     public List<NoteEntity> getNotes() {
         return notes;

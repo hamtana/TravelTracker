@@ -1,13 +1,19 @@
 package com.CCDHB.api;
 
 import com.CCDHB.NTA.entity.BookingEntity;
+import com.CCDHB.NTA.entity.NoteEntity;
 import com.CCDHB.NTA.entity.PatientEntity;
+import com.CCDHB.NTA.entity.PatientServiceProviderEntity;
 import com.CCDHB.NTA.mapper.BookingMapper;
 import com.CCDHB.NTA.mapper.PatientMapper;
+import com.CCDHB.NTA.mapper.NoteMapper;
+import com.CCDHB.NTA.mapper.PatientServiceProviderMapper;
 import com.CCDHB.NTA.repository.BookingRepository;
 import com.CCDHB.NTA.repository.PatientRepository;
+import com.CCDHB.model.Note;
 import com.CCDHB.model.Patient;
 import com.CCDHB.model.Booking;
+import com.CCDHB.model.PatientServiceProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +42,10 @@ public class PatientController implements PatientsApi {
     private BookingMapper bookingMapper;
     @Autowired
     private BookingRepository bookingRepository;
+    @Autowired
+    private NoteMapper noteMapper;
+    @Autowired
+    private PatientServiceProviderMapper patientServiceProviderMapper;
 
 
     /** Add a new patient.
@@ -144,4 +154,145 @@ public class PatientController implements PatientsApi {
         return ResponseEntity.ok(patient); // OK
 
     }
+
+    /** Add a Note to a specific Patient using their NHI.
+     * @param nhi  (required)
+     * @param note  (required)
+     * @return HTTP status code indicating the result of the operation
+     */
+    @Override
+    public ResponseEntity<Void> addPatientNote(String nhi, Note note) {
+        if(!patientRepository.existsById(nhi)){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // Not Found
+        }
+        // Retrieve the patient entity
+        PatientEntity patientEntity = patientRepository.findById(nhi).get();
+
+        // Create a new NoteEntity and set its properties
+        NoteEntity noteEntity = noteMapper.toEntity(note);
+        patientEntity.getNotes().add(noteEntity);
+
+        // send the updated patient entity to the repository to save
+        patientRepository.save(patientEntity);
+
+        return ResponseEntity.status(HttpStatus.CREATED).build(); // Created
+
+    }
+
+    /**
+     * Add a Service Provider to a specific Patient using their NHI.
+     * @param nhi  (required)
+     * @param patientServiceProvider  (required)
+     * @return HTTP status code indicating the result of the operation
+     */
+    @Override
+    public ResponseEntity<Void> addPatientServiceProvider(String nhi, PatientServiceProvider patientServiceProvider) {
+        if(!patientRepository.existsById(nhi)){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // Not Found
+        }
+        PatientServiceProviderEntity serviceProviderEntity = patientServiceProviderMapper.toEntity(patientServiceProvider);
+        PatientEntity patientEntity = patientRepository.findById(nhi).get();
+
+        patientEntity.getPatientServiceProviders().add(serviceProviderEntity);
+        patientRepository.save(patientEntity);
+        return ResponseEntity.status(HttpStatus.CREATED).build(); // Created
+    }
+
+    /**
+     * Retrieve all Notes associated with a specific patient
+     * @param nhi  (required)
+     * @return List of Notes for the patient
+     */
+    @Override
+    public ResponseEntity<List<Note>> getPatientNotes(String nhi) {
+        if(!patientRepository.existsById(nhi)){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // Not Found
+        }
+        PatientEntity patientEntity = patientRepository.findById(nhi).get();
+        List<Note> notes = patientEntity.getNotes().stream()
+                .map(noteMapper::toDto)
+                .toList();
+        return ResponseEntity.ok(notes);
+    }
+
+    /**
+     * Retrieve a specific Service Provider associated with a specific Patient
+     * @param nhi  (required)
+     * @param id  (required)
+     * @return
+     */
+    @Override
+    public ResponseEntity<PatientServiceProvider> getPatientServiceProvider(String nhi, String id) {
+        if(!patientRepository.existsById(nhi)){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // Not Found
+        }
+        PatientEntity patientEntity = patientRepository.findById(nhi).get();
+
+        Optional<PatientServiceProviderEntity> serviceProviderEntity = patientEntity.getPatientServiceProviders().stream()
+                .filter(sp -> sp.getId().equals(id))
+                .findFirst();
+        // Not Found
+        return serviceProviderEntity.map(patientServiceProviderEntity -> ResponseEntity.ok(patientServiceProviderMapper.toDto(patientServiceProviderEntity))).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    }
+
+    /**
+     * Retrieve all the Service Providers associated with a specific Patient
+     * @param nhi  (required)
+     * @return List of Service Providers for the patient
+     */
+    @Override
+    public ResponseEntity<List<PatientServiceProvider>> getPatientServiceProviders(String nhi) {
+        if(!patientRepository.existsById(nhi)){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // Not Found
+        }
+        PatientEntity patientEntity = patientRepository.findById(nhi).get();
+        List<PatientServiceProvider> serviceProviders = patientEntity.getPatientServiceProviders().stream()
+                .map(patientServiceProviderMapper::toDto)
+                .toList();
+        return ResponseEntity.ok(serviceProviders);
+    }
+
+    /**
+     * Update a specific Service Provider associated with a specific Patient
+     * @param nhi  (required)
+     * @param id  (required)
+     * @param patientServiceProvider  (required)
+     * @return HTTP status code indicating the result of the operation
+     */
+    @Override
+    public ResponseEntity<Void> updatePatientServiceProvider(String nhi, String id, PatientServiceProvider patientServiceProvider) {
+        // Fetch patient
+        Optional<PatientEntity> patientOpt = patientRepository.findById(nhi);
+        if (patientOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // Patient not found
+        }
+        PatientEntity patientEntity = patientOpt.get();
+
+        // Find the service provider
+        Optional<PatientServiceProviderEntity> serviceProviderEntityOpt = patientEntity.getPatientServiceProviders()
+                .stream()
+                .filter(sp -> sp.getId().equals(id))
+                .findFirst();
+
+        if (serviceProviderEntityOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // Service provider not found
+        }
+
+        PatientServiceProviderEntity serviceProviderEntity = serviceProviderEntityOpt.get();
+
+        // Update fields (expand if you have more)
+        serviceProviderEntity.setFrequency(patientServiceProvider.getFrequency());
+        serviceProviderEntity.setNotes(
+                patientServiceProvider.getNotes().stream()
+                        .map(noteMapper::toEntity)
+                        .toList()
+        );
+
+        // If PatientServiceProviderEntity is managed by cascade on PatientEntity
+        patientRepository.save(patientEntity);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build(); // Success, no content
+    }
+
+
 }
