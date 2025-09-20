@@ -3,6 +3,7 @@ export interface Patient {
   firstName: string;
   surname: string;
   ntaNumber: string;
+  notes: string[];
 }
 
 const API_BASE = "http://localhost:8080/api/patients";

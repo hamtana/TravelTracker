@@ -30,14 +30,18 @@ export function Patients() {
     }
   };
 
+  const addNhiToSession = (nhi: string) => {
+    sessionStorage.setItem("selectedNhi", nhi);
+  }
+
   const handleSearch = async () => {
     if (!searchNhi) {
       loadAllPatients();
       return;
     }
-    
     setLoading(true);
     setError("");
+
     try {
       const data = await getPatientByNhi(searchNhi);
       setPatients([data]);
@@ -116,7 +120,9 @@ export function Patients() {
                       <td className="px-4 py-2 space-x-2">
                         <button className="cosmic-button">Bookings</button>
                         <button className="cosmic-button">Add Booking</button>
-                        <button className="cosmic-button">Edit Patient</button>
+                        {/* on click add patient nhi to session storage */}
+
+                        <button onClick={() => addNhiToSession(patient.nhi)} className="cosmic-button">View Patient</button>
                       </td>
                     </tr>
                 ))}
