@@ -8,24 +8,24 @@ public class NoteEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
+    private Integer id;
 
     @Column(name="message", nullable = false)
     private String message;
 
     @ManyToOne
-    @JoinColumn(name = "booking")
+    @JoinColumn(name = "bookingId")
     private BookingEntity booking;
 
     @ManyToOne
-    @JoinColumn(name = "patient")
+    @JoinColumn(name = "patientNhi")
     private PatientEntity patient;
 
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

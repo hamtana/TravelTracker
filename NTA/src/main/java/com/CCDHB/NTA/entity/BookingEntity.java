@@ -18,7 +18,7 @@ public class BookingEntity {
     private PatientEntity patient;
 
     @Column(name = "dateOfDeparture", nullable = false)
-    private String dateOfDeparture;
+    private LocalDate dateOfDeparture;
 
     @Column(name = "dateOfReturn")
     private LocalDate dateOfReturn;
@@ -65,11 +65,11 @@ public class BookingEntity {
         this.patient = patient;
     }
 
-    public String getDateOfDeparture() {
+    public LocalDate getDateOfDeparture() {
         return dateOfDeparture;
     }
 
-    public void setDateOfDeparture(String dateOfDeparture) {
+    public void setDateOfDeparture(LocalDate dateOfDeparture) {
         this.dateOfDeparture = dateOfDeparture;
     }
 

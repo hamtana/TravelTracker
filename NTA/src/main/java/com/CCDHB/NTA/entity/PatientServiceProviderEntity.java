@@ -23,7 +23,7 @@ public class PatientServiceProviderEntity {
     private String frequency;
 
     @ManyToOne
-    @JoinColumn(name = "patient", nullable = false)
+    @JoinColumn(name = "patientNhi", nullable = false)
     private PatientEntity patient;
 
 

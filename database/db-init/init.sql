@@ -15,6 +15,7 @@ CREATE TABLE Patient (
 	surname VARCHAR(100) NOT NULL
 );
 
+
 -- Support Persons
 CREATE TABLE SupportPerson ( 
 	id SERIAL PRIMARY KEY,
@@ -58,5 +59,21 @@ CREATE TABLE BookedSupportPerson(
 	supportPersonId INT NOT NULL REFERENCES SupportPerson(id),
 	PRIMARY KEY (bookingId, supportPersonId)
 );
+
+-- Notes Table
+CREATE TABLE Note (
+	id SERIAL PRIMARY KEY,
+	message VARCHAR(500),
+	patientNhi VARCHAR(7) REFERENCES Patient(nhi) ON DELETE CASCADE,
+	bookingId INT REFERENCES Booking(id) ON DELETE CASCADE
+);
+
+CREATE TABLE PatientSupportProvider(
+    id SERIAL PRIMARY KEY,
+    frequency VARCHAR(5),
+    serviceProviderId INT REFERENCES ServiceProvider(id) ON DELETE CASCADE,
+    patientNhi VARCHAR(7) REFERENCES Patient(nhi) ON DELETE CASCADE
+);
+;
 
 

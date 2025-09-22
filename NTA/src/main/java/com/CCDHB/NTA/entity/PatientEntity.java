@@ -1,6 +1,8 @@
 package com.CCDHB.NTA.entity;
 
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -20,7 +22,7 @@ public class PatientEntity {
     private String surname;
 
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<BookingEntity> bookings;
+    private List<BookingEntity> bookings = new ArrayList<>();
 
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<NoteEntity> notes;
