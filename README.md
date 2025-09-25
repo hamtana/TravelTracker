@@ -13,7 +13,9 @@ The **NTA CCDHB Travel Tracker** helps Wellington Hospital manage clients travel
 
 - Flight bookings  
 - Eligibility status  
-- Associated support persons  
+- Associated support persons
+- Service Providers
+- Accommodation
 
 The tool replaces manual Excel spreadsheets, providing **timely, accurate, and readable data** in a centralised hub.  
 
@@ -51,6 +53,5 @@ The tool replaces manual Excel spreadsheets, providing **timely, accurate, and r
 
 ## Installation & Setup
 
-1. Clone the repository:  
-   ```bash
-   git clone https://github.com/yourusername/nta-ccdHB-travel-tracker.git
+N/A at this time
+
