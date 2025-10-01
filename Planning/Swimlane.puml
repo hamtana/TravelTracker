@@ -1,5 +1,9 @@
 @startuml
 
+skin rose
+skinparam Style StrictUML
+skinparam LineType ortho
+
 split
   |Current Process|
   start

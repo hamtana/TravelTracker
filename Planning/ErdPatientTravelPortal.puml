@@ -1,0 +1,66 @@
+@startuml PatientTravelPortal
+
+skin rose
+skinparam Style StrictUML
+skinparam LineType ortho
+skinparam monochrome true
+
+'Tables
+Class Patient {
+    * patientNhi (PK) VARCHAR(7)
+--
+    + ntaNumber SERIAL
+    + firstName VARCHAR(30)
+    + otherGivenNames VARCHAR(30)
+    + surname VARCHAR(30)
+    + communityServiceCardNumber VARCHAR(40)
+    + communityServicesCardExpiry DATE
+    + dateOfBirth DATE
+    + phoneNumber VARCHAR(10)
+    + email VARCHAR(50)
+    + letter BOOLEAN
+    + accommodationEligibility BOOLEAN
+}
+
+Class ServiceProviders {
+    * id (PK) SERIAL
+--
+    + name VARCHAR(50)
+    + patientNhi VARCHAR(7) FK
+}
+
+Class Frequency {
+    * id (PK) SERIAL
+--
+    + name VARCHAR(15)
+    + serviceProviderId INT FK
+}
+
+Class Transport {
+    * id (PK) SERIAL
+--
+    + name VARCHAR(30)
+    + Reason VARCHAR(100)
+    + serviceProviderId INT FK
+}
+
+Class Address { 
+    * id (PK) SERIAL
+--
+    + name VARCHAR(200)
+    + effectiveFrom DATE
+    + patientNhi FK
+}
+
+Class Accommodation {
+    * id (PK) SERIAL 
+--
+    + Reason VARCHAR(10)
+}
+
+Patient --o{ ServiceProviders
+ServiceProviders --o{Transport
+ServiceProviders --o{Frequency
+Patient --{Address
+
+@enduml

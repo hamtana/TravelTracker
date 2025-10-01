@@ -1,4 +1,4 @@
-@startuml julliend-erd
+@startuml ERD-TravelTracker
 
 skin rose
 skinparam Style StrictUML
