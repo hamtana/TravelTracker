@@ -5,59 +5,85 @@ skinparam Style StrictUML
 skinparam LineType ortho
 skinparam monochrome true
 
+' === Tables ===
 Class Patient {
     * NHI: VARCHAR(7) PK
-    * NTA_Number: VARCHAR(7) PK
---
-    + First_Name: VARCHAR(30)
-    + Surname: VARCHAR(30) 
+    --
+    + NTA_Number: VARCHAR(7)
+    + First_Name: VARCHAR(100)
+    + Surname: VARCHAR(100) 
 }
 
-Class Support_Person {
+Class SupportPerson {
     * Id: SERIAL PK
---
+    --
     + First_Name: VARCHAR(30)
     + Surname: VARCHAR(30)
     + Covered_By_NTA: BOOLEAN
     + Patient_NHI: VARCHAR(7) FK
 }
 
-Class Booking {
+Class ServiceProvider {
     * Id: SERIAL PK
---
-    + Date_Of_Departure: DATE
-    + Date_Of_Return: DATE
-    + Booking_Status: VARCHAR(15)
-    + Estimated_Cost: DECIMAL(10, 2)
-    + Booking_Created_At: TIMESTAMP 
-    + Service_Provider_ID: INT FK
-    + Accommodation_Name: VARCHAR(50) FK
-    + Patient_NTA: VARCHAR(7) FK
-}
-
-Class Service_Provider {
-    * Name : VARCHAR(50) PK
---
+    --
+    + Name : VARCHAR(50)
     + Address : VARCHAR(100)
 }
 
 Class Accommodation {
     * Address : VARCHAR(100) PK
---
+    --
     + Name : VARCHAR(50)
 }
 
-Class Booking_Support_Person {
+Class Booking {
     * Id: SERIAL PK
---
-    + Booking_Id: INT FK
-    + Support_Person_Id: INT FK
+    --
+    + Patient_NHI: VARCHAR(7) FK
+    + Date_Of_Departure: DATE
+    + Date_Of_Return: DATE
+    + Destination: VARCHAR(30)
+    + Booking_Status: VARCHAR(15)
+    + Estimated_Cost: NUMERIC(10,2)
+    + Estimated_Cost_For_Patient: NUMERIC(10,2)
+    + Booking_Created_At: TIMESTAMP 
+    + ServiceProvider_Id: INT FK
+    + Accommodation_Address: VARCHAR(100) FK
 }
 
-Patient ||--{Booking
-Booking }--|| Service_Provider
-Booking ||--o{ Booking_Support_Person
-Support_Person ||--o{ Booking_Support_Person
+Class BookedSupportPerson {
+    * Booking_Id: INT PK, FK
+    * SupportPerson_Id: INT PK, FK
+}
+
+Class Note {
+    * Id: SERIAL PK
+    --
+    + Message: VARCHAR(500)
+    + Patient_NHI: VARCHAR(7) FK
+    + Booking_Id: INT FK
+}
+
+Class PatientSupportProvider {
+    * Id: SERIAL PK
+    --
+    + Frequency: VARCHAR(5)
+    + ServiceProvider_Id: INT FK
+    + Patient_NHI: VARCHAR(7) FK
+}
+
+' === Relationships ===
+Patient ||--{ SupportPerson
+Patient ||--{ Booking
+Patient ||--o{ Note
+Patient ||--{ PatientSupportProvider
+
+Booking }--|| ServiceProvider
 Booking }--|| Accommodation
+Booking ||--o{ BookedSupportPerson
+Booking ||--o{ Note
+
+SupportPerson ||--o{ BookedSupportPerson
+ServiceProvider ||--{ PatientSupportProvider
 
 @enduml

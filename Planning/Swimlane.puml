@@ -1,0 +1,49 @@
+@startuml
+
+split
+  |Current Process|
+  start
+  :Receive appointment about the patient;
+  if (Patient has appropriate support documentation?) then (Yes)
+    :Register the patient for NTA on the NTA portal;
+  else (no)
+    :Request information from the specialist to support registration;
+    :Register the patient on NTA portal;
+  endif
+  if (Needing to Update Registration)? then (Yes)
+    :Resend the entire registration through the
+    NTA portal with new Service provider, 
+    including all current Service Providers;
+  endif
+  if (Update Registration name?) then (yes)
+    :Send message to MoH via FileZilla to update the name;
+  endif
+  end
+
+split again
+  |#AntiqueWhite|Optimal Process|
+  start
+  :Receive patient appointment details;
+  :Check details are valid and
+  have appropriate supporting documentation;
+  if (Patient Registered?) then (Yes)
+      :Enter the patient's NHI into the portal;
+      :See a history of what the patient is registered for;
+      if (Service Provider present?) then (No)
+        :Add on additional service provider;
+      else (Yes)
+      endif
+  else (No)
+      :Register the patient on the Portal with
+      the required service provider;
+  endif 
+  
+  if (Patient's Details needing updated?) then (Yes)
+      :Enter the patient's NHI into the portal;
+      :See the patient's contact information;
+      :Update the patient's details;
+  else (No)
+  endif
+  stop
+end split
+@enduml
