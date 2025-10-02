@@ -1,3 +1,5 @@
+import useFetch from "../useAuthenticatedFetch";
+
 export interface Patient {
   nhi: string;
   firstName: string;
@@ -9,68 +11,68 @@ export interface Patient {
 const API_BASE = "http://localhost:8080/api/patients";
 
 /**
- * Get all patients
+ * Custom hook that provides patient API methods with Clerk authentication
  */
-export async function getAllPatients(): Promise<Patient[]> {
-  const response = await fetch(API_BASE);
-  if (!response.ok) {
-    throw new Error("Failed to fetch patients");
-  }
-  return response.json();
-}
+export function PatientApi() {
+  const authenticatedFetch = useFetch();
 
-/**
- * Get a single patient by NHI
- */
-export async function getPatientByNhi(nhi: string): Promise<Patient> {
-  const response = await fetch(`${API_BASE}/${nhi}`);
-  if (response.status === 404) {
-    throw new Error("No patient found with that NHI");
-  }
-  if (!response.ok) {
-    throw new Error("Failed to fetch patient");
-  }
-  return response.json();
-}
+  /**
+   * Get all patients
+   */
+  const getAllPatients = async (): Promise<Patient[]> => {
+    return authenticatedFetch(API_BASE);
+  };
 
-/**
- * Add a new patient
- */
-export async function addPatient(patient: Patient): Promise<Patient> {
-  const response = await fetch(API_BASE, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(patient),
-  });
-  if (!response.ok) {
-    throw new Error("Failed to add patient");
-  }
-  return response.json();
-}
+  /**
+   * Get a single patient by NHI
+   */
+  const getPatientByNhi = async (nhi: string): Promise<Patient> => {
+    try {
+      return await authenticatedFetch(`${API_BASE}/${nhi}`);
+    } catch (err: any) {
+      if (err.message.includes("404")) {
+        throw new Error("No patient found with that NHI");
+      }
+      throw err;
+    }
+  };
 
-/**
- * Update a patient
- */
-export async function updatePatient(nhi: string, patient: Patient): Promise<Patient> {
-  const response = await fetch(`${API_BASE}/${nhi}`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(patient),
-  });
-  if (!response.ok) {
-    throw new Error("Failed to update patient");
-  }
-  return response.json();
-}
+  /**
+   * Add a new patient
+   */
+  const addPatient = async (patient: Patient): Promise<Patient> => {
+    return authenticatedFetch(API_BASE, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(patient),
+    });
+  };
 
-/**
- * Delete a patient
- */
-export async function deletePatient(nhi: string): Promise<void> {
-  const response = await fetch(`${API_BASE}/${nhi}`, {
-    method: "DELETE",
-  });
-  if (!response.ok) {
-    throw new Error("Failed to delete patient");
-  }
+  /**
+   * Update a patient
+   */
+  const updatePatient = async (nhi: string, patient: Patient): Promise<Patient> => {
+    return authenticatedFetch(`${API_BASE}/${nhi}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(patient),
+    });
+  };
+
+  /**
+   * Delete a patient
+   */
+  const deletePatient = async (nhi: string): Promise<void> => {
+    await authenticatedFetch(`${API_BASE}/${nhi}`, {
+      method: "DELETE",
+    });
+  };
+
+  return {
+    getAllPatients,
+    getPatientByNhi,
+    addPatient,
+    updatePatient,
+    deletePatient,
+  };
 }

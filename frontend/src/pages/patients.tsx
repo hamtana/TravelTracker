@@ -3,10 +3,11 @@ import { SignedIn, SignedOut } from "@clerk/clerk-react";
 import { Navbar } from "../components/Navbar";
 import { ThemeToggle } from "../components/ThemeToggle";
 import SignedOutComponent from "../components/SignedOutComponent";
-import { getAllPatients, getPatientByNhi } from "../api/patientApi";
+import { PatientApi } from "../api/patientApi";
 import type { Patient } from "../api/patientApi";
 
 export function Patients() {
+  const { getAllPatients, getPatientByNhi } = PatientApi();
   const [patients, setPatients] = useState<Patient[]>([]);
   const [searchNhi, setSearchNhi] = useState("");
   const [loading, setLoading] = useState(false);
@@ -32,13 +33,14 @@ export function Patients() {
 
   const addNhiToSession = (nhi: string) => {
     sessionStorage.setItem("selectedNhi", nhi);
-  }
+  };
 
   const handleSearch = async () => {
     if (!searchNhi) {
       loadAllPatients();
       return;
     }
+
     setLoading(true);
     setError("");
 
@@ -52,7 +54,6 @@ export function Patients() {
       setLoading(false);
     }
   };
-
 
   return (
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
@@ -70,32 +71,28 @@ export function Patients() {
 
               {/* Toolbar */}
               <div className="flex justify-between items-center">
-                {/* Left buttons */}
                 <div className="space-x-2">
                   <button className="cosmic-button">Add Patient</button>
                 </div>
-
-                {/* Right search */}
                 <div className="flex space-x-2">
                   <input
                     type="text"
                     value={searchNhi}
                     onChange={(e) => setSearchNhi(e.target.value)}
                     onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        handleSearch();
-                      }
+                      if (e.key === "Enter") handleSearch();
                     }}
                     placeholder="Enter NHI..."
                     className="px-3 py-2 border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                   />
-                  <button onClick={handleSearch} className="cosmic-button">Search</button>
+                  <button onClick={handleSearch} className="cosmic-button">
+                    Search
+                  </button>
                 </div>
               </div>
 
-              {/* Error Loading 8
               {loading && <p>Loading patients...</p>}
-              {error && <p className="text-red-500">Error {error}</p>} */}
+              {error && <p className="text-red-500">Error: {error}</p>}
 
               {/* Patient Table */}
               <div className="overflow-x-auto items-center">
@@ -110,29 +107,31 @@ export function Patients() {
                     </tr>
                   </thead>
                   <tbody>
-                    {/* Dummy rows for now */}
                     {patients.map((patient) => (
-                    <tr className="border-t text-center">
-                      <td className="px-4 py-2">{patient.nhi}</td>
-                      <td className="px-4 py-2">{patient.firstName}</td>
-                      <td className="px-4 py-2">{patient.surname}</td>
-                      <td className="px-4 py-2">{patient.ntaNumber}</td>
-                      <td className="px-4 py-2 space-x-2">
-                        <button className="cosmic-button">Bookings</button>
-                        <button className="cosmic-button">Add Booking</button>
-                        {/* on click add patient nhi to session storage */}
-
-                        <button onClick={() => addNhiToSession(patient.nhi)} className="cosmic-button">View Patient</button>
-                      </td>
-                    </tr>
-                ))}
-                {patients.length === 0 && !loading && (
-                  <tr>
-                    <td colSpan={5} className="px-4 py-2 text-center">
-                      No patients found.
-                    </td>
-                    </tr>
-                )}
+                      <tr key={patient.nhi} className="border-t text-center">
+                        <td className="px-4 py-2">{patient.nhi}</td>
+                        <td className="px-4 py-2">{patient.firstName}</td>
+                        <td className="px-4 py-2">{patient.surname}</td>
+                        <td className="px-4 py-2">{patient.ntaNumber}</td>
+                        <td className="px-4 py-2 space-x-2">
+                          <button className="cosmic-button">Bookings</button>
+                          <button className="cosmic-button">Add Booking</button>
+                          <button
+                            onClick={() => addNhiToSession(patient.nhi)}
+                            className="cosmic-button"
+                          >
+                            View Patient
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                    {patients.length === 0 && !loading && (
+                      <tr>
+                        <td colSpan={5} className="px-4 py-2 text-center">
+                          No patients found.
+                        </td>
+                      </tr>
+                    )}
                   </tbody>
                 </table>
               </div>
@@ -141,7 +140,7 @@ export function Patients() {
         </SignedIn>
       </main>
     </div>
-  )
+  );
 }
 
-export default Patients
+export default Patients;
