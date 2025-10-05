@@ -3,10 +3,11 @@ import { SignedIn, SignedOut } from "@clerk/clerk-react";
 import { Navbar } from "../components/Navbar";
 import { ThemeToggle } from "../components/ThemeToggle";
 import SignedOutComponent from "../components/SignedOutComponent";
-import { getPatientByNhi, updatePatient } from "../api/patientApi";
+import { PatientApi } from "../api/patientApi";
 import type { Patient } from "../api/patientApi";
 
 export function ViewPatient() {
+  const { getPatientByNhi, updatePatient } = PatientApi();
   const [patient, setPatient] = useState<Patient>();
   const [searchNhi, setSearchNhi] = useState("");
   const [loading, setLoading] = useState(false);
@@ -37,17 +38,40 @@ export function ViewPatient() {
     } finally {
       setLoading(false);
     }
-    
-    const updatePatient = async () => {
-
-        try{
-            const updatedPatient = await updatePatient();
-            setPatient(updatedPatient);
-        }
 
 
   };
 
+  /**
+   * Handle form field changes
+   */
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { id, value } = e.target;
+    setPatient((prev) => {
+      if (!prev) return prev; // if undefined, skip
+      if (id === "notes") {
+        return { ...prev, notes: value.split("\n") };
+      }
+      return { ...prev, [id]: value };
+    });
+  };
+
+  /**
+   * Submit the edited patient back to the server
+   */
+  const editPatient = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!patient) return;
+
+    try {
+      await updatePatient(searchNhi, patient);
+      alert("✅ Patient updated successfully!");
+    } catch (err: any) {
+      alert("❌ Failed to update patient: " + err.message);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
@@ -61,41 +85,87 @@ export function ViewPatient() {
         <SignedIn>
           <section className="relative min-h-screen flex flex-col items-center justify-center px-4">
             <div className="container max-w-6xl mx-auto space-y-8">
-              <h1 className="text-2xl font-bold text-center"></h1>
-              <form>
-                <div className="flex space-x-2 justify-center">
+              <h1 className="text-2xl font-bold text-center">
+                View / Edit Patient
+              </h1>
 
-                    <label htmlFor="nhi" className="font-medium">NHI:</label>
-                    <input type="text" id="nhi" value={searchNhi} readOnly> </input>
+              {loading && <p className="text-center">Loading patient...</p>}
+              {error && (
+                <p className="text-center text-red-500 font-semibold">{error}</p>
+              )}
 
-                    <label htmlFor="firstName" className="font-medium">First Name:</label>
-                    <input type="text" id="firstName" value={patient?.firstName ?? ""} readOnly> </input>
+              {!loading && patient && (
+                <form onSubmit={editPatient} className="flex flex-col space-y-4 items-center">
+                  <div className="flex flex-col space-y-2 w-full max-w-lg">
+                    <label htmlFor="nhi" className="font-medium">
+                      NHI:
+                    </label>
+                    <input
+                      type="text"
+                      id="nhi"
+                      value={searchNhi}
+                      readOnly
+                      className="border p-2 rounded"
+                    />
 
-                    <label htmlFor="surname" className="font-medium">Surname:</label>
-                    <input type="text" id="surname" value={patient?.surname ?? ""} readOnly> </input>
+                    <label htmlFor="firstName" className="font-medium">
+                      First Name:
+                    </label>
+                    <input
+                      type="text"
+                      id="firstName"
+                      value={patient.firstName}
+                      onChange={handleChange}
+                      className="border p-2 rounded"
+                    />
 
-                    <label htmlFor="ntaNumber" className="font-medium">NTA Number:</label>
-                    <input type="text" id="ntaNumber" value={patient?.ntaNumber ?? ""}> </input>
+                    <label htmlFor="surname" className="font-medium">
+                      Surname:
+                    </label>
+                    <input
+                      type="text"
+                      id="surname"
+                      value={patient.surname}
+                      onChange={handleChange}
+                      className="border p-2 rounded"
+                    />
 
-                    <label htmlFor="notes" className="font-medium">Notes:</label>
-                    <textarea id="notes" value={patient?.notes.join("\n") ?? ""} className="w-96 h-32"></textarea>
+                    <label htmlFor="ntaNumber" className="font-medium">
+                      NTA Number:
+                    </label>
+                    <input
+                      type="text"
+                      id="ntaNumber"
+                      value={patient.ntaNumber}
+                      onChange={handleChange}
+                      className="border p-2 rounded"
+                    />
 
-                    <button onSubmit={} className="cosmic-button"></button>
-                </div>
-              </form>
+                    <label htmlFor="notes" className="font-medium">
+                      Notes:
+                    </label>
+                    <textarea
+                      id="notes"
+                      value={patient.notes.join("\n")}
+                      onChange={handleChange}
+                      className="border p-2 rounded w-full h-32"
+                    />
 
-
-
-              {/* Patient Table */}
-              <div className="overflow-x-auto items-center">
-
-              </div>
+                    <button
+                      type="submit"
+                      className="cosmic-button mt-4 px-6 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
+                    >
+                      Save Changes
+                    </button>
+                  </div>
+                </form>
+              )}
             </div>
           </section>
         </SignedIn>
       </main>
     </div>
-  )
+  );
 }
 
-export default ViewPatient
+export default ViewPatient;

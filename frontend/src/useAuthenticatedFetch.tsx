@@ -1,4 +1,4 @@
-import { useAuth } from "@clerk/clerk-react"; // adjust the import based on your setup
+import { useAuth } from "@clerk/clerk-react"; 
 
 type FetchArgs = [input: RequestInfo, init?: RequestInit];
 

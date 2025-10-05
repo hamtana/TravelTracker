@@ -1,5 +1,4 @@
 import type { ServiceProvider } from "./serviceProviderApi";
-import type { Accommodation } from "./accommodationApi";
 
 export interface Booking {
     dateOfDeparture: Date;
