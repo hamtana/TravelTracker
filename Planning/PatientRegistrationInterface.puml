@@ -26,7 +26,10 @@
 
     **Community Services Card Expire**: | "      "
 
-    **Organ Donor** | [] Yes  [] No
+    **ACC:** | [] Yes [ ] No
+    **ACC Claim Number:** | "         "
+
+    **Organ Donor** | [] Yes  [ ] No
 
 
     **Service Providers: ** | {SI
@@ -46,6 +49,33 @@
     Christchurch Hospital | [ ] '| [ ] '| [ ] '| [ ] '| [ ]' | "          "
     }
     . | [Edit Transport Options]
+
+
+    **1st Support person** | [X] Yes [ ] No
+    **Reason for 1st support person** | {SI
+        **Reason:**
+        [] Parent of Child Client 
+        [X] Clinical Decision Maker
+        [] Client Well Being
+        [] Accessing Services
+        [] Emotional/Physical Support
+        [] Assistance with clinical decision
+        [] Escorting Clinical Care
+        [] Publicly Funded Specialist Recommendation
+    }
+
+    **2nd Support Person** | [X] Yes [ ] No
+    **Reason for 2nd Support Person** | {SI
+        **Reason:**
+        [] Parent of Child Client 
+        [] Clinical Decision Maker
+        [X] Client Well Being
+        [] Accessing Services
+        [] Emotional/Physical Support
+        [] Assistance with clinical decision
+        [] Escorting Clinical Care
+        [] Publicly Funded Specialist Recommendation
+    }
 
     ----|----
     **Referring Hospital** | "            "
