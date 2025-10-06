@@ -1,0 +1,69 @@
+@startuml registerNewPatientNTA
+
+' use strict UML mode
+' style tweaks to make the diagram a little more readable
+skinparam {
+	Style strictuml
+	RoundCorner 5
+	BoxPadding 35
+	ParticipantPadding 15
+    Padding 2
+
+	Sequence {
+		' make activations yellow too
+		LifeLineBackgroundColor #FDFDCD
+
+		' make stereotypes more presentable
+		Stereotype {
+			Font {
+				Size 11
+				Style plain
+			}
+		}
+	}
+
+	Database {
+		' make database border consistent with the rest of the diagram
+		BorderColor #A80036
+	}
+
+}
+
+actor "User" as user
+
+'ad the required participants.
+participant "NTA Portal" as portal <<form>>
+participant "Patient Editor" as patientEditor <<form>>
+participant "patient: Patient" as patient <<domain>>
+participant "PatientCollectionDAO" as patientCollectionDAO <<DAO>>
+
+'user clicks submit button
+user -> portal++: click 'Register New Patient'
+create patientEditor
+portal -> patientEditor: <<construct>>
+
+' user enters product details and clicks the save product button
+user -> patientEditor++ : enters Patient details
+user -> patientEditor : clicks Submit button
+
+' construct product object from user input
+create patient
+patientEditor -> patient : <<construct from user input>>
+patient -> patientEditor : return patient
+
+'Construct the DAO
+create patientCollectionDAO
+patientEditor -> patientCollectionDAO : <<construct>>
+
+'Save the patient
+patientEditor -> patientCollectionDAO++: save(patient)
+
+'close the product editor
+patientCollectionDAO--
+patientEditor--
+
+'close the main menu
+destroy patientEditor
+
+
+@enduml

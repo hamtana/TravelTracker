@@ -1,0 +1,88 @@
+@startsalt LofiNTARegistration
+
+{^"NTA Registration" 
+    {Please enter the following information to register patient for NTA}
+    **Surname** | "Phillips     "
+    **Other Names** | "         "
+    **First Name** | "Hamish    "
+    **Phone Number** | "0211234567"
+    **Email Address** | "example@gmail.com"
+    
+    **Date of Birth** | "27/02/1999"
+
+    **Street Address** | {SI
+    3/123 Example Street
+    Cliffswood
+    Wellington
+    6022
+    }
+
+    **Postal Address** | [X] Same as Street Address
+    **Postal Address** | {SI
+    (Leave blank if same)
+    }
+
+    **Community Services Card Number**: | "      "
+
+    **Community Services Card Expire**: | "      "
+
+    **ACC:** | [] Yes [ ] No
+    **ACC Claim Number:** | "         "
+
+    **Organ Donor** | [] Yes  [ ] No
+
+
+    **Service Providers: ** | {SI
+    **Service Provider** | **Date** | **Frequency** | **Accommodation** | **Accommodation Reason**
+    Wellington Hospital | "24/06/2025     " | "22x2" | "No" | [] Medical Condition [ ] Distance Travelled [ ] Long Stay Accommodation
+    Auckland Hospital | "23/09/2025    " | "LDT    " | "Yes" | [] Medical Condition [ ] Distance Travelled [ ] Long Stay Accommodation
+    Christchurch Hospital | "01/01/2025    " | "LDT    " | "Yes" | [] Medical Condition [ ] Distance Travelled [ ] Long Stay Accommodation
+
+    }
+    . | [Add Service Provider]
+
+    **Transport Mode Registration:** | {SI
+    **Service Provider** | **Private/Public Transport** | **Air Travel** | **Taxi/Shuttle** | **Mobility Taxi** | **Ferry** | **Transport Reason**
+    ---
+    Wellington Hospital | [] ' | [ ] ' | [ ] ' | [ ] '| [ ] ' | "           "
+    Auckland Hospital | [ ] '| [ ] ' | [ ] '| [ ] '| [ ] ' | "            "
+    Christchurch Hospital | [ ] '| [ ] '| [ ] '| [ ] '| [ ]' | "          "
+    }
+    . | [Edit Transport Options]
+
+
+    **1st Support person** | [X] Yes [ ] No
+    **Reason for 1st support person** | {SI
+        **Reason:**
+        [] Parent of Child Client 
+        [X] Clinical Decision Maker
+        [] Client Well Being
+        [] Accessing Services
+        [] Emotional/Physical Support
+        [] Assistance with clinical decision
+        [] Escorting Clinical Care
+        [] Publicly Funded Specialist Recommendation
+    }
+
+    **2nd Support Person** | [X] Yes [ ] No
+    **Reason for 2nd Support Person** | {SI
+        **Reason:**
+        [] Parent of Child Client 
+        [] Clinical Decision Maker
+        [X] Client Well Being
+        [] Accessing Services
+        [] Emotional/Physical Support
+        [] Assistance with clinical decision
+        [] Escorting Clinical Care
+        [] Publicly Funded Specialist Recommendation
+    }
+
+    ----|----
+    **Referring Hospital** | "            "
+    **Specialist Name** | "               "
+    **Contact Number** | "                "
+
+    ====|====
+    **Complete Registration** | [Submit]
+}
+@endsalt
