@@ -1,4 +1,4 @@
-@startuml
+@startuml OptimalProcess
 
 skin rose
 skinparam Style StrictUML
