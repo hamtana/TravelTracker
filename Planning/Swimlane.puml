@@ -14,7 +14,7 @@ split
     :Request information from the specialist to support registration;
     :Register the patient on NTA portal;
   endif
-  if (Needing to Update Registration)? then (Yes)
+  if (Needing to Update Registration) then (Yes)
     :Resend the entire registration through the
     NTA portal with new Service provider, 
     including all current Service Providers;
