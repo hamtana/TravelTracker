@@ -22,6 +22,10 @@ class Patient {
     + email : VARCHAR(50)
     + letter : BOOLEAN
     + accommodationEligibility : BOOLEAN
+    + firstSupportPerson : BOOLEAN
+    + firstSupportPersonReason : VARCHAR(300)
+    + secondSupportPerson : BOOLEAN
+    + secondSupportPersonReason : VARCHAR(300)
 }
 
 class ServiceProvider {
