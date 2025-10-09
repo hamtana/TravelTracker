@@ -2,9 +2,11 @@
 
 {^"NTA Registration" 
     {Please enter the following information to register patient for NTA}
+    **NHI** | "             "
+    **NTA Number** | "             "
     **Surname** | "Phillips     "
-    **Other Names** | "         "
-    **First Name** | "Hamish    "
+    **Other Names** | "             "
+    **First Name** | "Hamish       "
     **Phone Number** | "0211234567"
     **Email Address** | "example@gmail.com"
     
@@ -24,7 +26,7 @@
 
     **Community Services Card Number**: | "      "
 
-    **Community Services Card Expire**: | "      "
+    **Community Services Card Expiry**: | "      "
 
     **ACC:** | [] Yes [ ] No
     **ACC Claim Number:** | "         "
