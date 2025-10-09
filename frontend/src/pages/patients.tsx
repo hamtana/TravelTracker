@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { SignedIn, SignedOut } from "@clerk/clerk-react";
+import { useNavigate } from "react-router-dom"; 
 import { Navbar } from "../components/Navbar";
 import { ThemeToggle } from "../components/ThemeToggle";
 import SignedOutComponent from "../components/SignedOutComponent";
@@ -12,6 +13,9 @@ export function Patients() {
   const [searchNhi, setSearchNhi] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const navigate = useNavigate(); // <-- Initialize navigate
+
 
   useEffect(() => {
     loadAllPatients();
@@ -33,6 +37,7 @@ export function Patients() {
 
   const addNhiToSession = (nhi: string) => {
     sessionStorage.setItem("selectedNhi", nhi);
+    navigate("/view-patient")
   };
 
   const handleSearch = async () => {

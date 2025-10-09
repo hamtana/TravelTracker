@@ -15,32 +15,32 @@ export function ViewPatient() {
 
   useEffect(() => {
     loadPatient();
-    retrieveNhiFromSession();
   }, []);
 
-  const retrieveNhiFromSession = () => {
-    const nhi = sessionStorage.getItem("selectedNhi");
-    if (nhi) {
-      setSearchNhi(nhi);
-    }
-    }
 
-  const loadPatient = async () => {
-    setLoading(true);
-    setError("");
+const loadPatient = async () => {
+  setLoading(true);
+  setError("");
 
-    try {
-      const data = await getPatientByNhi(searchNhi);
-      setPatient(data);
-    } catch (err: any) {
-      setError(err.message);
-      setPatient(undefined);
-    } finally {
-      setLoading(false);
-    }
+  const nhi = sessionStorage.getItem("selectedNhi");
+  if (!nhi) {
+    setError("No NHI selected");
+    setLoading(false);
+    return;
+  }
+  setSearchNhi(nhi);
 
+  try {
+    const data = await getPatientByNhi(nhi); // pass NHI directly
+    setPatient(data);
+  } catch (err: any) {
+    setError(err.message);
+    setPatient(undefined);
+  } finally {
+    setLoading(false);
+  }
+};
 
-  };
 
   /**
    * Handle form field changes
@@ -139,16 +139,6 @@ export function ViewPatient() {
                       value={patient.ntaNumber}
                       onChange={handleChange}
                       className="border p-2 rounded"
-                    />
-
-                    <label htmlFor="notes" className="font-medium">
-                      Notes:
-                    </label>
-                    <textarea
-                      id="notes"
-                      value={patient.notes.join("\n")}
-                      onChange={handleChange}
-                      className="border p-2 rounded w-full h-32"
                     />
 
                     <button

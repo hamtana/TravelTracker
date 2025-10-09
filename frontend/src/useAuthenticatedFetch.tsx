@@ -7,6 +7,10 @@ export default function useFetch() {
 
   const authenticatedFetch = async (...args: FetchArgs): Promise<any> => {
     const token = await getToken();
+    if (!token) {
+      throw new Error("No authentication token found.");
+    }
+    console.log("Decoded token:", JSON.parse(atob(token.split('.')[1])));
     console.log("Sending token: ", token);
 
     const [input, init] = args;
