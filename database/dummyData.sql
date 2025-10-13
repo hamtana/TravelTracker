@@ -67,7 +67,7 @@ INSERT INTO Note (message, patient_nhi, booking_id) VALUES
 ('Waiting for confirmation from provider.', 'GHI7890', 6);
 
 -- Patient–Support–Provider Relationships
-INSERT INTO Patient_Support_Provider (frequency, service_provider_id, patient_nhi) VALUES
+INSERT INTO Patient_Service_Provider (frequency, service_provider_id, patient_nhi) VALUES
 ('22x2', 1, 'ABC1234'),
 ('6x6', 2, 'BCD2345'),
 ('LDT', 3, 'CDE3456'),
