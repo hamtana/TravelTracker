@@ -10,15 +10,15 @@ public class NoteEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name="message", nullable = false)
+    @Column(name = "message", nullable = false)
     private String message;
 
     @ManyToOne
-    @JoinColumn(name = "bookingId")
+    @JoinColumn(name = "booking_id")
     private BookingEntity booking;
 
     @ManyToOne
-    @JoinColumn(name = "patientNhi")
+    @JoinColumn(name = "patient_nhi")
     private PatientEntity patient;
 
     public Integer getId() {
