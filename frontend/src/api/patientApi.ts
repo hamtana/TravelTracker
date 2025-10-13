@@ -94,6 +94,7 @@ export function PatientApi() {
     addPatient,
     updatePatient,
     deletePatient,
-    getPatientBookings
+    getPatientBookings,
+    addPatientServiceProvider
   };
 }
