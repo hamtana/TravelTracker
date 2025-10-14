@@ -14,6 +14,8 @@ export interface Booking {
     estimatedCostForPatient : number;
     bookingCreatedAt: Date;
     serviceProviderId: ServiceProvider;
+    // supportPersonId: SupportPerson;
+    notes : String[];
     accommodationAddress : Accommodation | null;
 }
 

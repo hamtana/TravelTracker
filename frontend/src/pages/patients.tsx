@@ -40,6 +40,11 @@ export function Patients() {
     navigate("/view-patient")
   };
 
+  const addNhiToSessionBookings = (nhi: string) => {
+    sessionStorage.setItem("selectedNhi", nhi);
+    navigate(`/${nhi}/bookings`)
+  }
+
   const handleSearch = async () => {
     if (!searchNhi) {
       loadAllPatients();
@@ -119,8 +124,8 @@ export function Patients() {
                         <td className="px-4 py-2">{patient.surname}</td>
                         <td className="px-4 py-2">{patient.ntaNumber}</td>
                         <td className="px-4 py-2 space-x-2">
-                          <button className="cosmic-button">Bookings</button>
-                          <button className="cosmic-button">Add Booking</button>
+                          <button onClick={() => addNhiToSessionBookings(patient.nhi)} className="cosmic-button">Bookings</button>
+                          <button onClick={() => addNhiToSession(patient.nhi)} className="cosmic-button">Add Booking</button>
                           <button
                             onClick={() => addNhiToSession(patient.nhi)}
                             className="cosmic-button"
