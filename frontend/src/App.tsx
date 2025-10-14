@@ -5,7 +5,6 @@ import "./App.css";
 import Patients from "./pages/patients";
 import Bookings from "./pages/bookings";
 import ViewPatient from "./pages/view-patient";
-import { View } from "lucide-react";
 
 function App() {
   return (
