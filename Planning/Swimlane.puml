@@ -1,4 +1,4 @@
-@startuml
+@startuml OptimalProcess
 
 skin rose
 skinparam Style StrictUML
@@ -14,7 +14,7 @@ split
     :Request information from the specialist to support registration;
     :Register the patient on NTA portal;
   endif
-  if (Needing to Update Registration)? then (Yes)
+  if (Needing to Update Registration) then (Yes)
     :Resend the entire registration through the
     NTA portal with new Service provider, 
     including all current Service Providers;
@@ -32,7 +32,8 @@ split again
   have appropriate supporting documentation;
   if (Patient Registered?) then (Yes)
       :Enter the patient's NHI into the portal;
-      :See a history of what the patient is registered for;
+      :Display Service Providers, contact details
+      see a history of service providers, the patient is registered;
       if (Service Provider present?) then (No)
         :Add on additional service provider;
       else (Yes)
@@ -44,8 +45,12 @@ split again
   
   if (Patient's Details needing updated?) then (Yes)
       :Enter the patient's NHI into the portal;
-      :See the patient's contact information;
+      :See the all patient information;
       :Update the patient's details;
+  else (No)
+  endif
+  if (Send Letter?) then (yes)
+    :Send Letter;
   else (No)
   endif
   stop

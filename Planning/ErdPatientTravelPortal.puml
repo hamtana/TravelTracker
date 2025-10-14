@@ -5,62 +5,78 @@ skinparam Style StrictUML
 skinparam LineType ortho
 skinparam monochrome true
 
-'Tables
-Class Patient {
-    * patientNhi (PK) VARCHAR(7)
+' Tables
+class Patient {
+    * patientNhi : VARCHAR(7) <<PK>>
 --
-    + ntaNumber SERIAL
-    + firstName VARCHAR(30)
-    + otherGivenNames VARCHAR(30)
-    + surname VARCHAR(30)
-    + communityServiceCardNumber VARCHAR(40)
-    + communityServicesCardExpiry DATE
-    + dateOfBirth DATE
-    + phoneNumber VARCHAR(10)
-    + email VARCHAR(50)
-    + letter BOOLEAN
-    + accommodationEligibility BOOLEAN
+    + ntaNumber : SERIAL
+    + firstName : VARCHAR(30)
+    + otherGivenNames : VARCHAR(30)
+    + surname : VARCHAR(30)
+    + streetAddress: VARCHAR(500)
+    + postalAddress: VARCHAR(500)
+    + communityServiceCardNumber : VARCHAR(40)
+    + communityServicesCardExpiry : DATE
+    + dateOfBirth : DATE
+    + phoneNumber : VARCHAR(10)
+    + email : VARCHAR(50)
+    + letter : BOOLEAN
+    + accommodationEligibility : BOOLEAN
+    + firstSupportPerson : BOOLEAN
+    + firstSupportPersonReason : VARCHAR(300)
+    + secondSupportPerson : BOOLEAN
+    + secondSupportPersonReason : VARCHAR(300)
 }
 
-Class ServiceProviders {
-    * id (PK) SERIAL
+class ServiceProvider {
+    * id : SERIAL <<PK>>
 --
-    + name VARCHAR(50)
-    + patientNhi VARCHAR(7) FK
+    + name : VARCHAR(50)
+    + serviceProviderId : INT <<FK>>
 }
 
-Class Frequency {
-    * id (PK) SERIAL
+class Frequency {
+    * id : SERIAL <<PK>>
 --
-    + name VARCHAR(15)
-    + serviceProviderId INT FK
+    + name : VARCHAR(15)
+    + serviceProviderId : INT <<FK>>
 }
 
-Class Transport {
-    * id (PK) SERIAL
+class Transport {
+    * id : SERIAL <<PK>>
 --
-    + name VARCHAR(30)
-    + Reason VARCHAR(100)
-    + serviceProviderId INT FK
+    + name : VARCHAR(30)
 }
 
-Class Address { 
-    * id (PK) SERIAL
+
+class Accommodation {
+    * id : SERIAL <<PK>> 
 --
-    + name VARCHAR(200)
-    + effectiveFrom DATE
-    + patientNhi FK
+    + reason : VARCHAR(10)
 }
 
-Class Accommodation {
-    * id (PK) SERIAL 
---
-    + Reason VARCHAR(10)
+' Associative entity - Patient-ServiceProvider
+class PatientServiceProvider {
+    * patientNhi : VARCHAR(7) <<FK>>
+    * serviceProviderId : INT <<FK>>
 }
 
-Patient --o{ ServiceProviders
-ServiceProviders --o{Transport
-ServiceProviders --o{Frequency
-Patient --{Address
+' Associative Entity - ServiceProviderTransport
+
+class ServiceProviderTransport {
+    * serviceProviderId : INT <<FK>>
+    * transportId: INT <<FK>>
+--
+    + reason VARCHAR(20)
+}
+
+
+' Relationships
+Patient ||---o{ PatientServiceProvider
+ServiceProvider ||---o{ PatientServiceProvider
+ServiceProvider ||--o{ ServiceProviderTransport
+ServiceProviderTransport ||--o{ Transport
+ServiceProvider ||--o{ Frequency
+ServiceProvider |o--o| Accommodation
 
 @enduml

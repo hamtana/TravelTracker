@@ -11,7 +11,7 @@ public class ServiceProviderEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "name", nullable = false)
+    @Column(name="name", nullable = false)
     private String name;
 
     @Column(name = "address", nullable = false)

@@ -9,13 +9,13 @@ import java.util.List;
 @Table(name = "Patient")
 public class PatientEntity {
     @Id
-    @Column(name = "nhi", nullable = false, unique = true, length = 7)
+    @Column(name = "nhi", unique = true, length = 7)
     private String nhi;
 
-    @Column(name = "ntaNumber", unique = true, length = 7)
+    @Column(name = "nta_number", unique = true, length = 7)
     private String ntaNumber;
 
-    @Column(name = "firstName", nullable = false)
+    @Column(name = "first_name", nullable = false)
     private String firstName;
 
     @Column(name = "surname", nullable = false)

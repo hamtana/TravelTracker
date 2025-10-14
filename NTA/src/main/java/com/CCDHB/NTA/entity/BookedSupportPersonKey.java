@@ -2,28 +2,41 @@ package com.CCDHB.NTA.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-
 import java.io.Serializable;
 import java.util.Objects;
 
-/**
- * Composite key class for BookedSupportPersonEntity.
- * Provides equals and hashCode implementations, allows us to declare a composite primary key.
- */
 @Embeddable
-public class BookedSupportPersonKey implements Serializable{
+public class BookedSupportPersonKey implements Serializable {
 
-    @Column(name = "bookingId", insertable = false, updatable = false)
+    @Column(name = "booking_id")
     private Long bookingId;
 
-    @Column(name= "supportPersonId", insertable = false, updatable = false)
+    @Column(name = "support_person_id")
     private Long supportPersonId;
+
+    public Long getBookingId() {
+        return bookingId;
+    }
+
+    public void setBookingId(Long bookingId) {
+        this.bookingId = bookingId;
+    }
+
+    public Long getSupportPersonId() {
+        return supportPersonId;
+    }
+
+    public void setSupportPersonId(Long supportPersonId) {
+        this.supportPersonId = supportPersonId;
+    }
 
     @Override
     public boolean equals(Object o) {
+        if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BookedSupportPersonKey that = (BookedSupportPersonKey) o;
-        return Objects.equals(bookingId, that.bookingId) && Objects.equals(supportPersonId, that.supportPersonId);
+        return Objects.equals(bookingId, that.bookingId)
+                && Objects.equals(supportPersonId, that.supportPersonId);
     }
 
     @Override

@@ -16,14 +16,14 @@ public class PatientServiceProviderEntity {
     private String id;
 
     @ManyToOne
-    @JoinColumn(name= "serviceProviderId", nullable = false)
+    @JoinColumn(name = "service_provider_id", nullable = false)
     private ServiceProviderEntity serviceProvider;
 
     @Column(name = "frequency", nullable = false)
     private String frequency;
 
     @ManyToOne
-    @JoinColumn(name = "patientNhi", nullable = false)
+    @JoinColumn(name = "patient_nhi", nullable = false)
     private PatientEntity patient;
 
 

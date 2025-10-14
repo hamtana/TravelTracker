@@ -14,36 +14,36 @@ public class BookingEntity {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "patientNhi", nullable = false)
+    @JoinColumn(name = "patient_nhi", nullable = false)
     private PatientEntity patient;
 
-    @Column(name = "dateOfDeparture", nullable = false)
+    @Column(name = "date_of_departure",  nullable = false)
     private LocalDate dateOfDeparture;
 
-    @Column(name = "dateOfReturn")
+    @Column(name = "date_of_return")
     private LocalDate dateOfReturn;
 
-    @Column(name = "destination")
+    @Column(name = "destination", nullable = false)
     private String destination;
 
-    @Column(name = "bookingStatus")
+    @Column(name = "booking_status")
     private String bookingStatus;
 
-    @Column(name = "estimatedCost", nullable = false)
+    @Column(name = "estimated_cost", nullable = false)
     private Double estimatedCost;
 
-    @Column(name = "estimatedCostForPatient")
+    @Column(name = "estimated_cost_for_patient")
     private Double estimatedCostForPatient;
 
-    @Column(name = "bookingCreatedAt", nullable = false)
+    @Column(name = "booking_created_at", nullable = false)
     private OffsetDateTime bookingCreatedAt;
 
     @ManyToOne
-    @JoinColumn(name = "serviceProviderId", nullable = false)
+    @JoinColumn(name = "service_provider_id", nullable = false)
     private ServiceProviderEntity serviceProvider;
 
     @ManyToOne
-    @JoinColumn(name = "accommodationAddress")
+    @JoinColumn(name = "accommodation_address")
     private AccommodationEntity accommodation;
 
     @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)

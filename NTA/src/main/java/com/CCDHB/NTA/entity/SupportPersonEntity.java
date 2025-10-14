@@ -11,17 +11,17 @@ public class SupportPersonEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "firstName", nullable = false)
+    @Column(name = "first_name", nullable = false)
     private String firstName;
 
-    @Column(name = "lastName", nullable = false)
-    private String lastName;
+    @Column(name = "surname", nullable = false)
+    private String surname;
 
-    @Column(name = "coveredByNta", nullable = false)
+    @Column(name = "covered_by_nta", nullable = false)
     private Boolean coveredByNta;
 
     @ManyToOne
-    @JoinColumn(name = "patientNhi", nullable = false)
+    @JoinColumn(name = "patient_nhi", nullable = false)
     private PatientEntity patient;
 
     public Long getId() {
@@ -41,11 +41,11 @@ public class SupportPersonEntity {
     }
 
     public String getLastName() {
-        return lastName;
+        return surname;
     }
 
     public void setLastName(String lastName) {
-        this.lastName = lastName;
+        this.surname = lastName;
     }
 
     public Boolean getCoveredByNta() {

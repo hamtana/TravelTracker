@@ -2,6 +2,7 @@ package com.CCDHB.NTA;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 
 @SpringBootApplication(scanBasePackages = {"com.CCDHB.NTA", "com.CCDHB.api"})
 public class NtaApplication {

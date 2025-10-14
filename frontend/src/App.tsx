@@ -4,6 +4,8 @@ import { NotFound } from "./pages/NotFound";
 import "./App.css";
 import Patients from "./pages/patients";
 import Bookings from "./pages/bookings";
+import ViewPatient from "./pages/view-patient";
+import { View } from "lucide-react";
 
 function App() {
   return (
@@ -13,6 +15,7 @@ function App() {
           <Route index element={<Home />} />
           <Route path="/patients" element={<Patients />} />
           <Route path="/bookings" element={<Bookings />} />
+          <Route path ="/view-patient" element={<ViewPatient/> }/>
           <Route path="*" element={<NotFound />} />
        
         </Routes> 
