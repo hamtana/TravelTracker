@@ -1,6 +1,8 @@
 import type { ServiceProvider } from "./serviceProviderApi";
 import useFetch from "../useAuthenticatedFetch";
 import type { Accommodation } from "./accommodationApi";
+import type { SupportPerson } from "./supportPersonApi";
+import type { Notes } from "./notesApi";
 
 
 export interface Booking {
@@ -14,8 +16,8 @@ export interface Booking {
     estimatedCostForPatient : number;
     bookingCreatedAt: Date;
     serviceProviderId: ServiceProvider;
-    // supportPersonId: SupportPerson;
-    notes : String[];
+    supportPersons : SupportPerson[];
+    notes : Notes[];
     accommodationAddress : Accommodation | null;
 }
 

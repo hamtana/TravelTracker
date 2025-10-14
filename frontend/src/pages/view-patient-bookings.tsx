@@ -1,23 +1,45 @@
 import { useEffect, useState } from "react";
 import { SignedIn, SignedOut } from "@clerk/clerk-react";
-import { useNavigate } from "react-router-dom"; 
 import { Navbar } from "../components/Navbar";
 import { ThemeToggle } from "../components/ThemeToggle";
 import SignedOutComponent from "../components/SignedOutComponent";
 import { PatientApi } from "../api/patientApi";
-import type { Patient } from "../api/patientApi";
-
+import type { Booking } from "../api/bookingApi";
 
 export function ViewPatientBookings() {
+  const { getPatientBookings } = PatientApi();
+  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [nhi, setNhi] = useState<string | null>(null);
 
-    const { getPatientBookings } = PatientApi();
-    const [patients, setPatients] = useState<Patient[]>([]);
-    const [searchNhi, setSearchNhi] = useState("");
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState("");
-  
-    const navigate = useNavigate(); 
+  useEffect(() => {
+    const fetchBookings = async () => {
+      setLoading(true);
+      setError("");
 
+      const storedNhi = sessionStorage.getItem("selectedNhi");
+      if (!storedNhi) {
+        setError("No NHI selected");
+        setLoading(false);
+        return;
+      }
+
+      setNhi(storedNhi);
+
+      try {
+        // ✅ use storedNhi directly (not state)
+        const data = await getPatientBookings(storedNhi);
+        setBookings(data);
+      } catch (err: any) {
+        setError(err.message || "Failed to load bookings");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBookings();
+  }, []);
 
   return (
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
@@ -29,75 +51,104 @@ export function ViewPatientBookings() {
         </SignedOut>
 
         <SignedIn>
-          <section className="relative min-h-screen flex flex-col items-center justify-center px-4">
+          <section className="relative min-h-screen flex flex-col items-center justify-center px-4 py-12">
             <div className="container max-w-6xl mx-auto space-y-8">
-              <h1 className="text-2xl font-bold text-center">Patients</h1>
+              <h1 className="text-3xl font-bold text-center mb-6">
+                {nhi ? `Bookings for ${nhi}` : "Patient Bookings"}
+              </h1>
 
-              {/* Toolbar */}
-              <div className="flex justify-between items-center">
-                <div className="space-x-2">
-                  <button className="cosmic-button">Add Patient</button>
-                </div>
-                <div className="flex space-x-2">
-                  <input
-                    type="text"
-                    value={searchNhi}
-                    onChange={(e) => setSearchNhi(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") handleSearch();
-                    }}
-                    placeholder="Enter NHI..."
-                    className="px-3 py-2 border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
-                  <button onClick={handleSearch} className="cosmic-button">
-                    Search
-                  </button>
-                </div>
-              </div>
+              {loading && (
+                <p className="text-center text-lg">
+                  Loading patient bookings...
+                </p>
+              )}
 
-              {loading && <p>Loading patients...</p>}
-              {error && <p className="text-red-500">Error: {error}</p>}
+              {error && (
+                <p className="text-red-500 text-center text-lg">Error: {error}</p>
+              )}
 
-              {/* Patient Table */}
-              <div className="overflow-x-auto items-center">
-                <table className="min-w-full border border-foreground/20 rounded-lg">
-                  <thead>
-                    <tr className="bg-foreground/10 text-center">
-                      <th className="px-4 py-2">NHI Number</th>
-                      <th className="px-4 py-2">First Name</th>
-                      <th className="px-4 py-2">Surname</th>
-                      <th className="px-4 py-2">NTA Number</th>
-                      <th className="px-4 py-2">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {patients.map((patient) => (
-                      <tr key={patient.nhi} className="border-t text-center">
-                        <td className="px-4 py-2">{patient.nhi}</td>
-                        <td className="px-4 py-2">{patient.firstName}</td>
-                        <td className="px-4 py-2">{patient.surname}</td>
-                        <td className="px-4 py-2">{patient.ntaNumber}</td>
-                        <td className="px-4 py-2 space-x-2">
-                          <button onClick={() => addNhiToSessionBookings(patient.nhi)} className="cosmic-button">Bookings</button>
-                          <button onClick={() => addNhiToSession(patient.nhi)} className="cosmic-button">Add Booking</button>
-                          <button
-                            onClick={() => addNhiToSession(patient.nhi)}
-                            className="cosmic-button"
-                          >
-                            View Patient
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                    {patients.length === 0 && !loading && (
-                      <tr>
-                        <td colSpan={5} className="px-4 py-2 text-center">
-                          No patients found.
-                        </td>
-                      </tr>
+              {/* ✅ Booking Cards Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {bookings.map((booking) => (
+                  <div
+                    key={booking.id}
+                    className="p-6 bg-foreground/5 rounded-2xl shadow-md border border-foreground/10 hover:shadow-lg transition-shadow"
+                  >
+                    <h2 className="text-xl font-semibold mb-2 text-center">
+                      {booking.destination || "Unknown Destination"}
+                    </h2>
+
+                    <p className="text-sm mb-1">
+                      <strong>Status:</strong> {booking.bookingStatus || "N/A"}
+                    </p>
+
+                    <p className="text-sm mb-1">
+                      <strong>Date of Departure:</strong>{" "}
+                      {booking.dateOfDeparture
+                        ? new Date(booking.dateOfDeparture).toLocaleDateString()
+                        : "N/A"}
+                    </p>
+
+                    <p className="text-sm mb-1">
+                      <strong>Date of Return:</strong>{" "}
+                      {booking.dateOfReturn
+                        ? new Date(booking.dateOfReturn).toLocaleDateString()
+                        : "N/A"}
+                    </p>
+
+                    {booking.estimatedCost != null && (
+                      <p className="text-sm mb-1">
+                        <strong>Estimated Cost:</strong> $
+                        {booking.estimatedCost.toFixed(2)}
+                      </p>
                     )}
-                  </tbody>
-                </table>
+
+                    {booking.estimatedCostForPatient != null && (
+                      <p className="text-sm mb-1">
+                        <strong>Cost for Patient:</strong> $
+                        {booking.estimatedCostForPatient.toFixed(2)}
+                      </p>
+                    )}
+
+                    <p className="text-sm mb-1">
+                      <strong>Service Provider:</strong>{" "}
+                      {booking.serviceProviderId?.name || "N/A"}
+                    </p>
+
+                    {booking.accommodationAddress && (
+                      <p className="text-sm mb-1">
+                        <strong>Accommodation:</strong>{" "}
+                        {booking.accommodationAddress.name || "Unknown"} -{" "}
+                        {booking.accommodationAddress.address ||
+                          "No address provided"}
+                      </p>
+                    )}
+
+                    {booking.notes && booking.notes.length > 0 && (
+                      <div className="mt-2">
+                        <strong>Notes:</strong>
+                        <ul className="list-disc list-inside text-sm">
+                          {booking.notes.map((note) => (
+                            <li key={note.id || Math.random()}>
+                              {note.message || "Empty note"}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    <div className="mt-4 flex justify-center gap-2">
+                      <button className="cosmic-button">View Details</button>
+                      <button className="cosmic-button">Delete</button>
+                    </div>
+                  </div>
+                ))}
+
+                {bookings.length === 0 && !loading && (
+                  <p className="col-span-full text-center text-lg">
+                    No bookings found.
+                  </p>
+                )}
               </div>
             </div>
           </section>
@@ -106,4 +157,5 @@ export function ViewPatientBookings() {
     </div>
   );
 }
+
 export default ViewPatientBookings;

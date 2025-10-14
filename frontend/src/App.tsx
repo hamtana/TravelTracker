@@ -16,7 +16,7 @@ function App() {
           <Route path="/patients" element={<Patients />} />
           <Route path="/bookings" element={<Bookings />} />
           <Route path ="/view-patient" element={<ViewPatient/> }/>
-          <Route path ="/:nhi/bookings" element={<ViewPatientBookings/> }/>
+          <Route path ="/patients/:nhi/bookings" element={<ViewPatientBookings/> }/>
           <Route path="*" element={<NotFound />} />
        
         </Routes> 

@@ -1,7 +1,7 @@
 import useFetch from "../useAuthenticatedFetch";
 
 export interface ServiceProvider {
-    id: number;
+    id?: number;
   name: string;
   address: string;
 }

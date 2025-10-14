@@ -42,7 +42,7 @@ export function Patients() {
 
   const addNhiToSessionBookings = (nhi: string) => {
     sessionStorage.setItem("selectedNhi", nhi);
-    navigate(`/${nhi}/bookings`)
+    navigate(`/patients/${nhi}/bookings`)
   }
 
   const handleSearch = async () => {
