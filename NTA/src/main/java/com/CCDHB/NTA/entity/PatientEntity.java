@@ -22,9 +22,6 @@ public class PatientEntity {
     private String surname;
 
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<BookingEntity> bookings = new ArrayList<>();
-
-    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<NoteEntity> notes;
 
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -80,12 +77,5 @@ public class PatientEntity {
         this.surname = surname;
     }
 
-    public List<BookingEntity> getBookings() {
-        return bookings;
-    }
-
-    public void setBookings(List<BookingEntity> bookings) {
-        this.bookings = bookings;
-    }
 }
 

@@ -62,22 +62,6 @@ public class PatientController implements PatientsApi {
         return ResponseEntity.status(HttpStatus.CREATED).build(); // Created
     }
 
-    /**
-     * Add a booking for a specific patient using their NHI.
-     * @param nhi  (required)
-     * @param booking  (required)
-     * @return HTTP status code indicating the result of the operation
-     */
-    @Override
-    public ResponseEntity<Void> addPatientBooking(String nhi, Booking booking) {
-        if (!patientRepository.existsById(nhi)) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // Not Found
-        }
-        // Logic to add booking to patient would go here
-       bookingRepository.save(bookingMapper.toEntity(booking));
-        return ResponseEntity.status(HttpStatus.CREATED).build(); // Created
-    }
-
     /** Delete a patient using their NHI.
      * @param nhi  (required)
      * @return HTTP status code indicating the result of the operation
@@ -91,33 +75,13 @@ public class PatientController implements PatientsApi {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // Not Found
     }
 
-    /**
-     * Get all Booking for a specific patient using their NHI.
-     * @param nhi  (required)
-     * @return List of Bookings for the patient
-     */
-    @Override
-    public ResponseEntity<List<Booking>> getPatientBookings(String nhi) {
-        if (!patientRepository.existsById(nhi)) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // Not Found
-        }
-
-        List<BookingEntity> bookingEntities = bookingRepository.findByPatientNhi(nhi);
-        List <Booking> bookings = bookingEntities.stream()
-                .map(bookingMapper::toDto)
-                .toList();
-
-        return ResponseEntity.ok(bookings);
-
-    }
-
     /** Get a patient using their NHI.
      * @param nhi  (required)
      * @return The patient details if found, otherwise a 404 Not Found status
      */
     @Override
     public ResponseEntity<Patient> getPatientById(String nhi) {
-        System.out.println("Calling getPatinetById NHI=" + nhi);
+        //System.out.println("Calling getPatientById NHI=" + nhi);
         Optional<PatientEntity> patientEntity = patientRepository.findById(nhi);
         if(patientEntity.isPresent()){
             return ResponseEntity.ok(patientMapper.toDto(patientEntity.get()));

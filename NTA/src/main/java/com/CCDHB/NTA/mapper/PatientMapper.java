@@ -16,10 +16,4 @@ public interface PatientMapper {
 
     Patient toDto(PatientEntity patientEntity);
 
-    @AfterMapping
-    default void linkBookings(@MappingTarget PatientEntity patientEntity) {
-        if (patientEntity.getBookings() != null) {
-            patientEntity.getBookings().forEach(booking -> booking.setPatient(patientEntity));
-        }
-    }
 }

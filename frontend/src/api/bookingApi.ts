@@ -1,37 +1,40 @@
-import type { ServiceProvider } from "./serviceProviderApi";
 import useFetch from "../useAuthenticatedFetch";
+import type { ServiceProvider } from "./serviceProviderApi";
 import type { Accommodation } from "./accommodationApi";
 import type { SupportPerson } from "./supportPersonApi";
+import type { Patient } from "./patientApi";
 import type { Notes } from "./notesApi";
 
 
 export interface Booking {
     id?: number; 
-    dateOfDeparture: Date;
-    dateOfReturn: Date;
-    destination: String;
-    bookingStatus: String;
-    patientNhi: string;
+    patientNhi: Patient;
+    dateOfDeparture: string;
+    dateOfReturn: string;
+    destination: string;
+    bookingStatus: string;
     estimatedCost: number;
     estimatedCostForPatient : number;
-    bookingCreatedAt: Date;
-    serviceProviderId: ServiceProvider;
+    bookingCreatedAt: string;
+    serviceProvider: ServiceProvider;
     supportPersons : SupportPerson[];
     notes : Notes[];
-    accommodationAddress : Accommodation | null;
+    accommodationAddress : Accommodation;
 }
 
-const API_BASE = "http://localhost:8080/api/bookings";
+const API_BASE = "http://localhost:8080/api/bookings/";
 
 export function BookingApi() {
     const authenticatedFetch = useFetch();
 
 
-    const addBooking = async (booking : Booking): Promise<Booking> => {
-        return authenticatedFetch(API_BASE, {
+    const addBooking = async (booking : Booking, nhi: String): Promise<Booking> => {
+        return authenticatedFetch(`API_BASE/${nhi}`, {
             method: "POST",
             headers: {"Content-Type": "application/json"},
-            body: JSON.stringify(booking),
+            body: JSON.stringify({
+                ...booking,
+            }),
         });
     };
 

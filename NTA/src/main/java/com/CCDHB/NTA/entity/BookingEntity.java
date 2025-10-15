@@ -30,10 +30,10 @@ public class BookingEntity {
     private String bookingStatus;
 
     @Column(name = "estimated_cost", nullable = false)
-    private Double estimatedCost;
+    private Float estimatedCost;
 
     @Column(name = "estimated_cost_for_patient")
-    private Double estimatedCostForPatient;
+    private Float estimatedCostForPatient;
 
     @Column(name = "booking_created_at", nullable = false)
     private OffsetDateTime bookingCreatedAt;
@@ -105,19 +105,19 @@ public class BookingEntity {
         this.bookingStatus = bookingStatus;
     }
 
-    public Double getEstimatedCost() {
+    public Float getEstimatedCost() {
         return estimatedCost;
     }
 
-    public void setEstimatedCost(Double estimatedCost) {
+    public void setEstimatedCost(Float estimatedCost) {
         this.estimatedCost = estimatedCost;
     }
 
-    public Double getEstimatedCostForPatient() {
+    public Float getEstimatedCostForPatient() {
         return estimatedCostForPatient;
     }
 
-    public void setEstimatedCostForPatient(Double estimatedCostForPatient) {
+    public void setEstimatedCostForPatient(Float estimatedCostForPatient) {
         this.estimatedCostForPatient = estimatedCostForPatient;
     }
 

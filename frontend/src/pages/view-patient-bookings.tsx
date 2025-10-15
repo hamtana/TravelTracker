@@ -112,7 +112,7 @@ export function ViewPatientBookings() {
 
                     <p className="text-sm mb-1">
                       <strong>Service Provider:</strong>{" "}
-                      {booking.serviceProviderId?.name || "N/A"}
+                      {booking.serviceProvider?.name || "N/A"}
                     </p>
 
                     {booking.accommodationAddress && (

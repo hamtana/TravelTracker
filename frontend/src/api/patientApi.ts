@@ -55,7 +55,12 @@ export function PatientApi() {
     return authenticatedFetch(`${API_BASE}/${nhi}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(patient),
+      body: JSON.stringify({
+        nhi: patient.nhi,
+        firstName: patient.firstName,
+        surname: patient.surname,
+        ntaNumber: patient.ntaNumber,
+      }),
     });
   };
 

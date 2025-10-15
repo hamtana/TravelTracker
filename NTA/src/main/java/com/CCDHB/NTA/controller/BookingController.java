@@ -1,8 +1,12 @@
 package com.CCDHB.api;
 
 import com.CCDHB.NTA.entity.BookingEntity;
+import com.CCDHB.NTA.entity.PatientEntity;
 import com.CCDHB.NTA.mapper.BookingMapper;
+import com.CCDHB.NTA.mapper.PatientMapper;
 import com.CCDHB.NTA.repository.BookingRepository;
+import com.CCDHB.NTA.repository.PatientRepository;
+import com.CCDHB.model.Note;
 import com.CCDHB.model.Patient;
 import com.CCDHB.model.Booking;
 import com.CCDHB.model.SupportPerson;
@@ -27,70 +31,77 @@ public class BookingController implements BookingsApi {
     @Autowired
     private BookingMapper bookingMapper;
 
-    /**
-     * Add a new booking.
-     * @param booking  (required)
-     * @return HTTP status code indicating the result of the operation.
-     */
     @Override
-    public ResponseEntity<Booking> addBooking(Booking booking) {
-        if(bookingRepository.existsById(booking.getId())){
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        }
-        bookingRepository.save(bookingMapper.toEntity(booking));
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public ResponseEntity<Void> addBookingNote(String id, Note note) {
+        return BookingsApi.super.addBookingNote(id, note);
     }
 
-    /**
-     * Delete a booking by its ID.
-     * @param id  (required)
-     * @return HTTP status code indicating the result of the operation.
-     */
     @Override
-    public ResponseEntity<Void> deleteBookingById(Integer id) {
-        if(bookingRepository.existsById(id)){
+    public ResponseEntity<Void> addPatientBooking(String nhi, Booking booking) {
+        BookingEntity bookingEntity = bookingMapper.toEntity(booking);
+        PatientEntity patientEntity = new PatientEntity();
+        patientEntity.setNhi(nhi);
+        bookingEntity.setPatient(patientEntity);
+        bookingRepository.save(bookingEntity);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @Override
+    public ResponseEntity<Void> deleteBookingById(Integer id, String nhi) {
+       // Check if booking exists and belongs to patient with given NHI
+        Optional<BookingEntity> bookingEntityOpt = bookingRepository.findById(id);
+        if (bookingEntityOpt.isPresent() && bookingEntityOpt.get().getPatient().getNhi().equals(nhi)) {
             bookingRepository.deleteById(id);
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
-    /** Get a booking by its ID.
-     * @param id  (required)
-     * @return The booking if found, or HTTP status code indicating the result of the operation.
-     */
     @Override
-    public ResponseEntity<Booking> getBookingById(Integer id) {
-        Optional<BookingEntity> bookingEntity = bookingRepository.findById(id);
-        return bookingEntity.map(entity -> ResponseEntity.ok(bookingMapper.toDto(entity))).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    public ResponseEntity<Booking> getBookingById(Integer id, String nhi) {
+       // Get booking by nhi and id
+        Optional<BookingEntity> bookingEntityOpt = bookingRepository.findById(id);
+        if (bookingEntityOpt.isPresent() && bookingEntityOpt.get().getPatient().getNhi().equals(nhi)) {
+            Booking booking = bookingMapper.toDto(bookingEntityOpt.get());
+            return new ResponseEntity<>(booking, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
-    /** Get all bookings.
-     * @return List of all bookings, or HTTP status code indicating the result of the operation.
-     */
     @Override
-    public ResponseEntity<List<Booking>> getBookings() {
-        List<BookingEntity> bookingEntities = bookingRepository.findAll();
-        if(bookingEntities.isEmpty()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-        List<Booking> bookings = bookingEntities.stream().map(bookingMapper::toDto).toList();
-        return ResponseEntity.ok(bookings);
+    public ResponseEntity<List<Note>> getBookingNotes(String id) {
+        return BookingsApi.super.getBookingNotes(id);
     }
 
-    /** Update a booking by its ID.
-     * @param id  (required)
-     * @param booking  (required)
-     * @return The updated booking if found, or HTTP status code indicating the result of the operation.
-     */
     @Override
-    public ResponseEntity<Booking> updateBookingById(Integer id, Booking booking) {
-        if(!bookingRepository.existsById(id)){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    public ResponseEntity<List<Booking>> getPatientBookings(String nhi) {
+        List<BookingEntity> bookingEntities = bookingRepository.findByPatientNhi(nhi);
+        // need to convert List<BookingEntity> to List<Booking>
+        List<Booking> bookings = new ArrayList<>();
+        for (BookingEntity bookingEntity : bookingEntities) {
+            bookings.add(bookingMapper.toDto(bookingEntity));
         }
-        booking.setId(id);
-        bookingRepository.save(bookingMapper.toEntity(booking));
-        return ResponseEntity.ok(booking);
+        return new ResponseEntity<>(bookings, HttpStatus.OK);
+    }
 
+    @Override
+    public ResponseEntity<Booking> updateBookingById(Integer id, String nhi, Booking booking) {
+        // Check if booking exists and belongs to patient with given NHI
+        Optional<BookingEntity> bookingEntityOpt = bookingRepository.findById(id);
+        if (bookingEntityOpt.isPresent() && bookingEntityOpt.get().getPatient().getNhi().equals(nhi)) {
+            BookingEntity bookingEntityToUpdate = bookingEntityOpt.get();
+            // Set the ID to ensure consistency and update the entity
+            booking.setId(id);
+            BookingEntity updatedEntity = bookingMapper.toEntity(booking);
+            // Preserve the patient association
+            updatedEntity.setPatient(bookingEntityToUpdate.getPatient());
+            // Save updated entity
+            bookingRepository.save(bookingEntityToUpdate);
+            return new ResponseEntity<>(bookingMapper.toDto(bookingEntityToUpdate), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 }

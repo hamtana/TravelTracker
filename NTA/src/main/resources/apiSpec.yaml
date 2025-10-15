@@ -112,7 +112,7 @@ paths:
       description: Delete a patient by Id
       tags:
         - patients
-  '/patients/{nhi}/bookings':
+  '/bookings/{nhi}':
     get:
       summary: List bookings for a patient
       parameters:
@@ -401,46 +401,7 @@ paths:
       description: Deletes a supporter by their ID.
       tags:
         - support-persons
-  /bookings:
-    get:
-      summary: List all bookings
-      responses:
-        '200':
-          description: A list of bookings
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Booking'
-        '404':
-          description: Bookings Not Found
-      operationId: getBookings
-      description: Retrieve All Bookings
-      tags:
-        - bookings
-    post:
-      summary: Create a new booking
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Booking'
-      responses:
-        '201':
-          description: Booking created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Booking'
-        '409':
-          description: Booking already exists
-      operationId: addBooking
-      description: Add a new Booking
-      tags:
-        - bookings
-  '/bookings/{id}':
+  '/bookings/{nhi}/{id}':
     get:
       summary: Get booking details
       parameters:
@@ -506,6 +467,17 @@ paths:
       description: Delete Booking by Id
       tags:
         - bookings
+    parameters:
+      - schema:
+          type: string
+        name: nhi
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: id
+        in: path
+        required: true
   '/bookings/{id}/notes':
     parameters:
       - schema:
@@ -762,14 +734,6 @@ components:
         surname:
           type: string
           maxLength: 30
-        bookings:
-          type: array
-          x-stoplight:
-            id: xi4vzb16bknyh
-          items:
-            $ref: '#/components/schemas/Booking'
-            x-stoplight:
-              id: a8mk4cej7l0wm
         notes:
           type: array
           x-stoplight:
@@ -862,13 +826,17 @@ components:
             $ref: '#/components/schemas/Note'
             x-stoplight:
               id: 0wfqry889bsg8
+        patientNhi:
+          $ref: '#/components/schemas/Patient'
+          x-stoplight:
+            id: cf6695mumxqcj
       required:
-        - id
         - dateOfDeparture
         - bookingStatus
         - estimatedCost
         - bookingCreatedAt
         - serviceProvider
+        - patientNhi
     ServiceProvider:
       type: object
       properties:
@@ -881,16 +849,11 @@ components:
           type: string
           maxLength: 100
       required:
-        - id
         - name
         - address
     Accommodation:
       type: object
       properties:
-        id:
-          type: string
-          x-stoplight:
-            id: yovnfoyse44ug
         address:
           type: string
           maxLength: 100
@@ -898,7 +861,6 @@ components:
           type: string
           maxLength: 50
       required:
-        - id
         - address
         - name
     BookedSupportPerson:
@@ -933,7 +895,6 @@ components:
           x-stoplight:
             id: 3qjg5h0ofe2ju
       required:
-        - id
         - message
     PatientServiceProvider:
       title: PatientServiceProvider
@@ -954,7 +915,6 @@ components:
           x-stoplight:
             id: pqjt85fm823dg
       required:
-        - id
         - serviceProvider
         - frequency
 tags:
