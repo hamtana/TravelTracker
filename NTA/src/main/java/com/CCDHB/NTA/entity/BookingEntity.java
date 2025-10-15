@@ -1,5 +1,6 @@
 package com.CCDHB.NTA.entity;
 
+import com.CCDHB.model.Patient;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -58,7 +59,7 @@ public class BookingEntity {
     }
 
     public PatientEntity getPatient() {
-        return patient;
+        return this.patient;
     }
 
     public void setPatient(PatientEntity patient) {

@@ -31,6 +31,12 @@ public class BookingController implements BookingsApi {
     @Autowired
     private BookingMapper bookingMapper;
 
+    @Autowired
+    private PatientRepository patientRepository;
+
+    @Autowired
+    private PatientMapper patientMapper;
+
     @Override
     public ResponseEntity<Void> addBookingNote(String id, Note note) {
         return BookingsApi.super.addBookingNote(id, note);
@@ -39,8 +45,11 @@ public class BookingController implements BookingsApi {
     @Override
     public ResponseEntity<Void> addPatientBooking(String nhi, Booking booking) {
         BookingEntity bookingEntity = bookingMapper.toEntity(booking);
-        PatientEntity patientEntity = new PatientEntity();
-        patientEntity.setNhi(nhi);
+        // Check if patient with given NHI exists
+        if (!patientRepository.existsById(nhi)) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        PatientEntity patientEntity = patientRepository.getReferenceById(nhi);
         bookingEntity.setPatient(patientEntity);
         bookingRepository.save(bookingEntity);
         return new ResponseEntity<>(HttpStatus.CREATED);

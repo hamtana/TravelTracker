@@ -112,56 +112,6 @@ paths:
       description: Delete a patient by Id
       tags:
         - patients
-  '/bookings/{nhi}':
-    get:
-      summary: List bookings for a patient
-      parameters:
-        - name: nhi
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Bookings for patient
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Booking'
-        '404':
-          description: Patient Not Found
-      operationId: getPatientBookings
-      description: Retrieve Patients Bookings.
-      tags:
-        - patients
-        - bookings
-    post:
-      summary: ''
-      operationId: addPatientBooking
-      responses:
-        '201':
-          description: Created New Booking
-        '409':
-          description: Booking already exists
-      description: Add a New Booking for a Patient
-      tags:
-        - patients
-        - bookings
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Booking'
-        description: ''
-      parameters: []
-    parameters:
-      - schema:
-          type: string
-        name: nhi
-        in: path
-        required: true
   '/patients/{nhi}/notes':
     parameters:
       - schema:
@@ -401,6 +351,88 @@ paths:
       description: Deletes a supporter by their ID.
       tags:
         - support-persons
+  '/bookings/{nhi}':
+    get:
+      summary: List bookings for a patient
+      parameters:
+        - name: nhi
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Bookings for patient
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Booking'
+        '404':
+          description: Patient Not Found
+      operationId: getPatientBookings
+      description: Retrieve Patients Bookings.
+      tags:
+        - patients
+        - bookings
+    post:
+      summary: ''
+      operationId: addPatientBooking
+      responses:
+        '201':
+          description: Created New Booking
+        '409':
+          description: Booking already exists
+      description: Add a New Booking for a Patient
+      tags:
+        - patients
+        - bookings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Booking'
+        description: ''
+      parameters: []
+    parameters:
+      - schema:
+          type: string
+        name: nhi
+        in: path
+        required: true
+  '/bookings/{nhi}/support-person':
+    get:
+      summary: List bookings for a patient
+      parameters:
+        - name: nhi
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Booked Support People
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BookedSupportPerson'
+        '404':
+          description: Patient Not Found
+      operationId: getBookedSupportPersons
+      description: Retrieve booked support persons
+      tags:
+        - bookings
+        - patients
+        - support-persons
+    parameters:
+      - schema:
+          type: string
+        name: nhi
+        in: path
+        required: true
   '/bookings/{nhi}/{id}':
     get:
       summary: Get booking details
@@ -478,6 +510,38 @@ paths:
         name: id
         in: path
         required: true
+  '/bookings/{nhi}/{id}/support-person':
+    parameters:
+      - schema:
+          type: string
+        name: nhi
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: id
+        in: path
+        required: true
+    post:
+      summary: Add a Support Person
+      operationId: addBookedSupportPerson
+      responses:
+        '201':
+          description: Created
+          content: {}
+        '404':
+          description: Not Found
+        '409':
+          description: Support Person Already exists
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SupportPerson'
+      description: 'Add a Support Person '
+      tags:
+        - support-persons
+        - bookings
   '/bookings/{id}/notes':
     parameters:
       - schema:
@@ -742,7 +806,7 @@ components:
             $ref: '#/components/schemas/Note'
             x-stoplight:
               id: 7118i73waf800
-        supportProviders:
+        serviceProvider:
           x-stoplight:
             id: tu0kke7d8sy77
           type: array
@@ -814,10 +878,6 @@ components:
           $ref: '#/components/schemas/Accommodation'
           x-stoplight:
             id: omsd7xtb6by5i
-        supportPersons:
-          type: array
-          items:
-            $ref: '#/components/schemas/BookedSupportPerson'
         notes:
           x-stoplight:
             id: q1n5a1szwt3d5
@@ -826,7 +886,7 @@ components:
             $ref: '#/components/schemas/Note'
             x-stoplight:
               id: 0wfqry889bsg8
-        patientNhi:
+        patient:
           $ref: '#/components/schemas/Patient'
           x-stoplight:
             id: cf6695mumxqcj
@@ -836,7 +896,7 @@ components:
         - estimatedCost
         - bookingCreatedAt
         - serviceProvider
-        - patientNhi
+        - patient
     ServiceProvider:
       type: object
       properties:
@@ -873,6 +933,10 @@ components:
           $ref: '#/components/schemas/SupportPerson'
           x-stoplight:
             id: w5a3zm38w0tjk
+        booking:
+          $ref: '#/components/schemas/Booking'
+          x-stoplight:
+            id: 0s7xbnzajn5rs
     Note:
       title: Note
       x-stoplight:
