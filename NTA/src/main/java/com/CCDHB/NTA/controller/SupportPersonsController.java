@@ -42,32 +42,6 @@ public class SupportPersonsController implements SupportPersonsApi {
         return ResponseEntity.status(HttpStatus.CREATED).build(); // Created
     }
 
-    /**
-     * Delete a Support Person by Id.
-     * @param id  (required)
-     * @return
-     */
-    @Override
-    public ResponseEntity<Void> deleteSupporterById(Integer id) {
-        if(supportPersonRepository.findById(id).isPresent()){
-            supportPersonRepository.deleteById(id);
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build(); // No Content
-        }
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // Not Found
-    }
-
-    /**
-     * Get a Support Person by Id.
-     * @param id  (required)
-     * @return
-     */
-    @Override
-    public ResponseEntity<SupportPerson> getSupporterById(Integer id) {
-        if(supportPersonRepository.findById(id).isPresent()){
-            return ResponseEntity.ok(supportPersonMapper.toDto(supportPersonRepository.findById(id).get())); // OK
-        }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // Not Found
-    }
 
     /**
      * Get all Support Persons.
@@ -86,13 +60,53 @@ public class SupportPersonsController implements SupportPersonsApi {
     }
 
     @Override
-    public ResponseEntity<SupportPerson> updateSupporterById(Integer id, SupportPerson supportPerson) {
-        if (!supportPersonRepository.existsById(id)) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // Not Found
+    public ResponseEntity<Void> deleteSupporterById(Integer id, String nhi) {
+        SupportPersonEntity supportPersonEntity = supportPersonRepository.findById(id).orElse(null);
+        if (supportPersonEntity == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-        supportPerson.setId(id); // keep ID consistent
-        SupportPersonEntity supportPersonEntity = supportPersonMapper.toEntity(supportPerson);
-        supportPersonRepository.save(supportPersonEntity);
+        // Delete the Support Person
+        supportPersonRepository.deleteById(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build(); // No Content
+    }
+
+    @Override
+    public ResponseEntity<SupportPerson> getSupporterById(Integer id, String nhi) {
+        Optional<SupportPersonEntity> supportPersonEntityOpt = supportPersonRepository.findById(id);
+        if (supportPersonEntityOpt.isPresent() && supportPersonEntityOpt.get().getPatient().getNhi().equals(nhi)) {
+            SupportPerson supportPerson = supportPersonMapper.toDto(supportPersonEntityOpt.get());
+            return new ResponseEntity<>(supportPerson, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @Override
+    public ResponseEntity<List<SupportPerson>> getSupportersForPatient(String nhi) {
+        List<SupportPersonEntity> supportPersonEntities = supportPersonRepository.findByPatientNhi(nhi);
+        if (supportPersonEntities.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        List<SupportPerson> supportPersonList = supportPersonEntities.stream()
+                .map(supportPersonMapper::toDto)
+                .toList();
+        return ResponseEntity.ok(supportPersonList);
+    }
+
+    @Override
+    public ResponseEntity<SupportPerson> updateSupporterById(Integer id, String nhi, SupportPerson supportPerson) {
+        Optional<SupportPersonEntity> existingOpt = supportPersonRepository.findById(id);
+        if (existingOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        SupportPersonEntity existingEntity = existingOpt.get();
+
+        // Use MapStruct update method or manual copying
+        supportPersonMapper.updateEntityFromDto(supportPerson, existingEntity);
+
+        supportPersonRepository.save(existingEntity);
+
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

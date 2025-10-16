@@ -285,7 +285,31 @@ paths:
       description: Add a Support Person
       tags:
         - support-persons
-  '/support-persons/{id}':
+  '/support-persons/{nhi}':
+    get:
+      summary: List all support persons
+      responses:
+        '200':
+          description: A list of support persons
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SupportPerson'
+        '404':
+          description: Supporters Not Found
+      operationId: getSupportersForPatient
+      description: Retrieves all Patient Supporters for a patient
+      tags:
+        - support-persons
+    parameters:
+      - schema:
+          type: string
+        name: nhi
+        in: path
+        required: true
+  '/support-persons/{nhi}/{id}':
     get:
       summary: Get a support person by ID
       parameters:
@@ -351,6 +375,17 @@ paths:
       description: Deletes a supporter by their ID.
       tags:
         - support-persons
+    parameters:
+      - schema:
+          type: string
+        name: nhi
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: id
+        in: path
+        required: true
   '/bookings/{nhi}':
     get:
       summary: List bookings for a patient
