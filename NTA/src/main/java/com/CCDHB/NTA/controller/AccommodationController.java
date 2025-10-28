@@ -1,5 +1,8 @@
 package com.CCDHB.api;
 
+import com.CCDHB.NTA.mapper.AccommodationMapper;
+import com.CCDHB.NTA.repository.AccommodationRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -14,54 +17,71 @@ import java.util.*;
 @CrossOrigin(origins = "*") // Allow requests from any origin
 public class AccommodationController implements AccommodationsApi {
 
-    private final HashMap<String, Accommodation> accommodations = new HashMap<>();
+
+    @Autowired
+    private AccommodationRepository accommodationRepository;
+
+    @Autowired
+    private AccommodationMapper accommodationMapper;
 
     @Override
     public Optional<NativeWebRequest> getRequest() {
         return AccommodationsApi.super.getRequest();
     }
 
+    /**
+     * Add a new accommodation.
+     * @param accommodation  (required)
+     * @return
+     */
     @Override
     public ResponseEntity<Void> addAccommodation(Accommodation accommodation) {
-        if (accommodations.containsKey(accommodation.getAddress())){
+        if(accommodationRepository.existsById(accommodation.getAddress())){
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        } else {
+            accommodationRepository.save(accommodationMapper.toEntity(accommodation));
+            return ResponseEntity.status(HttpStatus.CREATED).build();
         }
-        accommodations.put(accommodation.getAddress(), accommodation);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @Override
     public ResponseEntity<Void> deleteAccommodationByAddress(String address) {
-       if(accommodations.containsKey(address)){
-           accommodations.remove(address);
-           return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-       }
-       return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        if(!accommodationRepository.existsById(address)){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } else {
+            accommodationRepository.deleteById(address);
+            return ResponseEntity.ok().build();
+        }
     }
 
     @Override
     public ResponseEntity<List<Accommodation>> getAccommodation() {
-       if(accommodations.isEmpty()){
-           return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-       }
-       return ResponseEntity.ok(new ArrayList<>(accommodations.values()));
+        List<Accommodation> accommodations = accommodationRepository.findAll().stream()
+                .map(accommodationMapper::toDto)
+                .toList();
+        if(accommodations.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } else {
+            return ResponseEntity.ok(accommodations);
+        }
     }
 
     @Override
     public ResponseEntity<Accommodation> getAccommodationByAddress(String address) {
-        if(accommodations.containsKey(address)){
-            return ResponseEntity.ok(accommodations.get(address));
-        }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        Optional<Accommodation> accommodation = accommodationRepository.findById(address)
+                .map(accommodationMapper::toDto);
+        return accommodation.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
     @Override
     public ResponseEntity<Void> updateAccommodationByAddress(String address, Accommodation accommodation) {
-        if(!accommodations.containsKey(address)){
+        if(!accommodationRepository.existsById(address)){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } else {
+            accommodation.setAddress(address); // Ensure the address remains unchanged
+            accommodationRepository.save(accommodationMapper.toEntity(accommodation));
+            return ResponseEntity.ok().build();
         }
-        accommodation.setAddress(address); // keep ID consistent
-        accommodations.put(address, accommodation);
-        return ResponseEntity.ok().build();
     }
 }
