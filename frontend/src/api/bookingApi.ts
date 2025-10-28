@@ -8,7 +8,7 @@ import type { Notes } from "./notesApi";
 
 export interface Booking {
     id?: number; 
-    patientNhi: Patient;
+    patient: Patient;
     dateOfDeparture: string;
     dateOfReturn: string;
     destination: string;
@@ -29,7 +29,7 @@ export function BookingApi() {
 
 
     const addBooking = async (booking : Booking, nhi: String): Promise<Booking> => {
-        return authenticatedFetch(`API_BASE/${nhi}`, {
+        return authenticatedFetch(`${API_BASE}${nhi}`, {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({
@@ -67,11 +67,23 @@ export function BookingApi() {
         });
     };
 
+    const getBookingsByPatientNhi = async (nhi: string): Promise<Booking[]> => {
+        try {
+            return await authenticatedFetch(`${API_BASE}${nhi}`);
+        } catch (err: any) {
+            if (err.message.includes("404")) {
+                throw new Error("No bookings found for that patient NHI");
+            }
+            throw err;
+        };
+    };
+
     return {
         addBooking,
         deleteBookingById,
         getBookingById,
         getAllBookings,
         updateBookingById,
+        getBookingsByPatientNhi
     };
 }

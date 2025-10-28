@@ -3,12 +3,14 @@ import { SignedIn, SignedOut } from "@clerk/clerk-react";
 import { Navbar } from "../components/Navbar";
 import { ThemeToggle } from "../components/ThemeToggle";
 import SignedOutComponent from "../components/SignedOutComponent";
-import { PatientApi } from "../api/patientApi";
 import type { Booking } from "../api/bookingApi";
+import { useNavigate } from "react-router-dom";
+import { BookingApi } from "../api/bookingApi";
 
 export function ViewPatientBookings() {
-  const { getPatientBookings } = PatientApi();
+  const { getBookingsByPatientNhi } = BookingApi();
   const [bookings, setBookings] = useState<Booking[]>([]);
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [nhi, setNhi] = useState<string | null>(null);
@@ -29,7 +31,7 @@ export function ViewPatientBookings() {
 
       try {
         // ✅ use storedNhi directly (not state)
-        const data = await getPatientBookings(storedNhi);
+        const data = await getBookingsByPatientNhi(storedNhi);
         setBookings(data);
       } catch (err: any) {
         setError(err.message || "Failed to load bookings");
@@ -149,7 +151,15 @@ export function ViewPatientBookings() {
                     No bookings found.
                   </p>
                 )}
+
+              
+
               </div>
+                   {/* Return to Previous Page */}
+                  <button onClick={() => navigate("/patients")} 
+                    className="cosmic-button mt-4 px-6 py-2 rounded bg-blue-600 text-white hover:bg-blue-700">
+                    Back to Patients
+                  </button>  
             </div>
           </section>
         </SignedIn>

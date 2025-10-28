@@ -4,11 +4,13 @@ import { Navbar } from "../components/Navbar";
 import { ThemeToggle } from "../components/ThemeToggle";
 import SignedOutComponent from "../components/SignedOutComponent";
 import { PatientApi } from "../api/patientApi";
+import { useNavigate } from "react-router-dom";
 import type { Patient } from "../api/patientApi";
 
 export function ViewPatient() {
   const { getPatientByNhi, updatePatient } = PatientApi();
   const [patient, setPatient] = useState<Patient>();
+  const navigate = useNavigate();
   const [searchNhi, setSearchNhi] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -147,9 +149,16 @@ const loadPatient = async () => {
                     >
                       Save Changes
                     </button>
+
                   </div>
                 </form>
+                
               )}
+                  {/* Return to Previous Page */}
+                  <button onClick={() => navigate("/patients")} 
+                    className="cosmic-button mt-4 px-6 py-2 rounded bg-blue-600 text-white hover:bg-blue-700">
+                    Back to Patients
+                  </button>
             </div>
           </section>
         </SignedIn>

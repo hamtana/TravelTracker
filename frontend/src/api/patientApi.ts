@@ -1,5 +1,4 @@
 import useFetch from "../useAuthenticatedFetch";
-import type { Booking } from "./bookingApi";
 
 export interface Patient {
   nhi: string;
@@ -73,13 +72,6 @@ export function PatientApi() {
     });
   };
 
-  /** 
-   * Get Patient Bookings
-   * 
-   */
-  const getPatientBookings = async (nhi: string) : Promise<Booking[]> => {
-    return authenticatedFetch(`${API_BASE}/${nhi}/bookings`);
-  }
 
   /** 
    * Add Patient Service Provider
@@ -99,7 +91,6 @@ export function PatientApi() {
     addPatient,
     updatePatient,
     deletePatient,
-    getPatientBookings,
     addPatientServiceProvider
   };
 }
