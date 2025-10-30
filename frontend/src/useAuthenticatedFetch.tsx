@@ -10,8 +10,9 @@ export default function useFetch() {
     if (!token) {
       throw new Error("No authentication token found.");
     }
+
     console.log("Decoded token:", JSON.parse(atob(token.split('.')[1])));
-    console.log("Sending token: ", token);
+    console.log("Sending token:", token);
 
     const [input, init] = args;
 
@@ -24,11 +25,22 @@ export default function useFetch() {
     });
 
     if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
+      const errorText = await response.text();
+      throw new Error(`HTTP error ${response.status}: ${errorText}`);
     }
 
+    // ✅ Safely handle empty body (fixes your issue)
+    const text = await response.text();
+    if (!text) {
+      return null;
+    }
 
-    return response.json();
+    try {
+      return JSON.parse(text);
+    } catch {
+      console.warn("Response was not valid JSON");
+      return null;
+    }
   };
 
   return authenticatedFetch;
