@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { SignedIn, SignedOut } from "@clerk/clerk-react";
 import { useNavigate } from "react-router-dom";
 import { Navbar } from "../components/Navbar";
@@ -9,12 +9,38 @@ import type { Patient } from "../api/patientApi";
 
 export function Patients() {
   const { getPatientByNhi } = PatientApi();
-  const [patients, setPatients] = useState<Patient[]>([]);
-  const [searchNhi, setSearchNhi] = useState("");
+
+  // ✅ Load persisted data on mount
+  const [searchNhi, setSearchNhi] = useState(() => {
+    return sessionStorage.getItem("searchNhi") || "";
+  });
+
+  const [patients, setPatients] = useState<Patient[]>(() => {
+    const stored = sessionStorage.getItem("searchResults");
+    return stored ? JSON.parse(stored) : [];
+  });
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const navigate = useNavigate();
+
+  // ✅ Persist NHI and results whenever they change
+  useEffect(() => {
+    sessionStorage.setItem("searchNhi", searchNhi);
+  }, [searchNhi]);
+
+  useEffect(() => {
+    sessionStorage.setItem("searchResults", JSON.stringify(patients));
+  }, [patients]);
+
+  // ✅ Optional: auto-run last search when returning
+  useEffect(() => {
+    if (searchNhi && patients.length === 0) {
+      handleSearch();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const addNhiToSession = (nhi: string) => {
     sessionStorage.setItem("selectedNhi", nhi);
@@ -70,7 +96,7 @@ export function Patients() {
 
         <SignedIn>
           <section className="relative min-h-screen flex flex-col items-center justify-center px-6">
-             <div className="container max-w-6xl mx-auto space-y-8">
+            <div className="container max-w-6xl mx-auto space-y-8">
               <h1 className="text-3xl font-bold text-center">Search Patient</h1>
 
               {/* Search Bar */}
@@ -79,13 +105,13 @@ export function Patients() {
                   type="text"
                   value={searchNhi}
                   onChange={(e) =>
-                    setSearchNhi(e.target.value.toUpperCase()) // ✅ updates as uppercase while typing
+                    setSearchNhi(e.target.value.toUpperCase()) // ✅ live uppercase typing
                   }
                   onKeyDown={(e) => {
                     if (e.key === "Enter") handleSearch();
                   }}
                   placeholder="Enter NHI..."
-                  className="w-2/3 md:w-1/2 px-4 py-3 border rounded-md bg-background text-foreground text-lg focus:outline-none focus:ring-2 focus:ring-primary shadow-sm uppercase" // ✅ ensures uppercase text appearance
+                  className="w-2/3 md:w-1/2 px-4 py-3 border rounded-md bg-background text-foreground text-lg focus:outline-none focus:ring-2 focus:ring-primary shadow-sm uppercase"
                 />
                 <button
                   onClick={handleSearch}
@@ -113,20 +139,27 @@ export function Patients() {
                     </thead>
                     <tbody>
                       {patients.map((patient) => (
-                        <tr key={patient.nhi} className="border-t text-center text-lg">
+                        <tr
+                          key={patient.nhi}
+                          className="border-t text-center text-lg"
+                        >
                           <td className="px-6 py-3">{patient.nhi}</td>
                           <td className="px-6 py-3">{patient.firstName}</td>
                           <td className="px-6 py-3">{patient.surname}</td>
                           <td className="px-6 py-3">{patient.ntaNumber}</td>
                           <td className="px-6 py-3 space-x-2">
                             <button
-                              onClick={() => addNhiToSessionBookings(patient.nhi)}
+                              onClick={() =>
+                                addNhiToSessionBookings(patient.nhi)
+                              }
                               className="cosmic-button"
                             >
                               Bookings
                             </button>
                             <button
-                              onClick={() => addPatientToSessionAddBooking(patient)}
+                              onClick={() =>
+                                addPatientToSessionAddBooking(patient)
+                              }
                               className="cosmic-button"
                             >
                               Add Booking
