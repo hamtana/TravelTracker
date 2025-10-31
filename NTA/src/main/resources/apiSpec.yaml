@@ -405,7 +405,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/Booking'
         '404':
-          description: Patient Not Found
+          description: No Bookings Found
       operationId: getPatientBookings
       description: Retrieve Patients Bookings.
       tags:
@@ -436,6 +436,26 @@ paths:
         name: nhi
         in: path
         required: true
+  /bookings:
+    get:
+      summary: List bookings for a patient
+      responses:
+        '200':
+          description: Bookings for patient
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Booking'
+        '404':
+          description: No Bookings Found
+      operationId: getAllBookings
+      description: Retrieve All Bookings.
+      tags:
+        - patients
+        - bookings
+    parameters: []
   '/bookings/{nhi}/support-person':
     get:
       summary: List bookings for a patient

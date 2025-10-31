@@ -43,6 +43,17 @@ public class BookingController implements BookingsApi {
     }
 
     @Override
+    public ResponseEntity<List<Booking>> getAllBookings() {
+        List<BookingEntity> bookingEntities = bookingRepository.findAll();
+        // need to convert List<BookingEntity> to List<Booking>
+        List<Booking> bookings = new ArrayList<>();
+        for (BookingEntity bookingEntity : bookingEntities) {
+            bookings.add(bookingMapper.toDto(bookingEntity));
+        }
+        return new ResponseEntity<>(bookings, HttpStatus.OK);
+    }
+
+    @Override
     public ResponseEntity<Void> addPatientBooking(String nhi, Booking booking) {
         BookingEntity bookingEntity = bookingMapper.toEntity(booking);
         // Check if patient with given NHI exists
@@ -112,9 +123,8 @@ public class BookingController implements BookingsApi {
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-
-
-
-
     }
+
+
+
 }
