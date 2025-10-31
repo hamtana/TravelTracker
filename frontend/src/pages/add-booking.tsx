@@ -6,7 +6,6 @@ import SignedOutComponent from "../components/SignedOutComponent";
 import type { Booking } from "../api/bookingApi";
 import { BookingApi } from "../api/bookingApi";
 import type { Patient } from "../api/patientApi";
-import type { Accommodation } from "../api/accommodationApi";
 import { ServiceProviderApi, type ServiceProvider } from "../api/serviceProviderApi";
 
 export function AddBooking() {
