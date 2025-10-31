@@ -22,14 +22,14 @@ export interface Booking {
     accommodationAddress : Accommodation;
 }
 
-const API_BASE = "http://localhost:8080/api/bookings/";
+const API_BASE = "http://localhost:8080/api/bookings";
 
 export function BookingApi() {
     const authenticatedFetch = useFetch();
 
 
     const addBooking = async (booking : Booking, nhi: String): Promise<Booking> => {
-        return authenticatedFetch(`${API_BASE}${nhi}`, {
+        return authenticatedFetch(`${API_BASE}/${nhi}`, {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({
@@ -69,7 +69,7 @@ export function BookingApi() {
 
     const getBookingsByPatientNhi = async (nhi: string): Promise<Booking[]> => {
         try {
-            return await authenticatedFetch(`${API_BASE}${nhi}`);
+            return await authenticatedFetch(`${API_BASE}/${nhi}`);
         } catch (err: any) {
             if (err.message.includes("404")) {
                 throw new Error("No bookings found for that patient NHI");
