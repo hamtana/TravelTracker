@@ -45,7 +45,7 @@ export function ViewBooking() {
         </SignedOut>
 
         <SignedIn>
-            <section className="relative min-h-screen flex flex-col items-center justify-start px-6 pt-24">
+            <section className="relative min-h-screen flex flex-col items-center justify-center px-4 py-12">
           <div className="container max-w-3xl mx-auto space-y-8">
             <h1 className="text-2xl font-bold mb-4">View Booking</h1>
 
