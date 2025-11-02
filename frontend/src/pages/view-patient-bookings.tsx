@@ -43,6 +43,12 @@ export function ViewPatientBookings() {
     fetchBookings();
   }, []);
 
+  const addBookingToSession = (booking: Booking) => {
+    sessionStorage.setItem("selectedBooking", JSON.stringify(booking));
+    navigate(`/patients/${nhi}/bookings/${booking.id}`);
+  }
+
+
   return (
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
       <ThemeToggle />
@@ -140,7 +146,7 @@ export function ViewPatientBookings() {
                     )}
 
                     <div className="mt-4 flex justify-center gap-2">
-                      <button className="cosmic-button">View Details</button>
+                      <button onClick={() =>addBookingToSession(booking)} className="cosmic-button">View Details</button>
                       <button className="cosmic-button">Delete</button>
                     </div>
                   </div>

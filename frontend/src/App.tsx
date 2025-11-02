@@ -7,6 +7,7 @@ import Bookings from "./pages/bookings";
 import ViewPatient from "./pages/view-patient";
 import ViewPatientBookings from "./pages/view-patient-bookings";
 import AddBooking from "./pages/add-booking";
+import ViewBooking from "./pages/view-booking";
 
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
           <Route path ="/view-patient" element={<ViewPatient/> }/>
           <Route path ="/patients/:nhi/bookings" element={<ViewPatientBookings/> }/>
           <Route path="/patients/:nhi/add-booking" element={<AddBooking />} />
+          <Route path="/patients/:nhi/bookings/:bookingId" element={<ViewBooking />} />
           <Route path="*" element={<NotFound />} />
        
         </Routes> 

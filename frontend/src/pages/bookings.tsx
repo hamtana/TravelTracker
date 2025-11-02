@@ -168,9 +168,6 @@ export function Bookings() {
                 </table>
               </div>
             )}
-
-
-
           </section>
         </SignedIn>
       </main>

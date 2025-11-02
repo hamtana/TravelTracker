@@ -38,15 +38,15 @@ export function BookingApi() {
         });
     };
 
-    const deleteBookingById = async (id: string): Promise<void> => {
-        return authenticatedFetch(`${API_BASE}/${id}`, {
+    const deleteBookingById = async (id: string, nhi: string): Promise<void> => {
+        return authenticatedFetch(`${API_BASE}/${id}/${nhi}`, {
             method: "DELETE",
         });
     }
 
-    const getBookingById = async (id: string): Promise<Booking> => {
+    const getBookingById = async (id: string, nhi: string): Promise<Booking> => {
         try{
-            return await authenticatedFetch(`${API_BASE}/${id}`);
+            return await authenticatedFetch(`${API_BASE}/${id}/${nhi}`);
         } catch (err: any) {
             if (err.message.includes("404")) {
                 throw new Error("No booking found with that ID");
@@ -59,8 +59,8 @@ export function BookingApi() {
         return authenticatedFetch(API_BASE);
     };
 
-    const updateBookingById = async (id: string, booking : Booking): Promise<Booking> => {
-        return authenticatedFetch(`${API_BASE}/${id}`, {
+    const updateBookingById = async (id: string, nhi: string, booking : Booking): Promise<Booking> => {
+        return authenticatedFetch(`${API_BASE}/${id}/${nhi}`, {
             method: "PUT",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify(booking),
