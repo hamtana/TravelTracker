@@ -19,30 +19,28 @@ export function ViewPatient() {
     loadPatient();
   }, []);
 
+  const loadPatient = async () => {
+    setLoading(true);
+    setError("");
 
-const loadPatient = async () => {
-  setLoading(true);
-  setError("");
+    const nhi = sessionStorage.getItem("selectedNhi");
+    if (!nhi) {
+      setError("No NHI selected");
+      setLoading(false);
+      return;
+    }
+    setSearchNhi(nhi);
 
-  const nhi = sessionStorage.getItem("selectedNhi");
-  if (!nhi) {
-    setError("No NHI selected");
-    setLoading(false);
-    return;
-  }
-  setSearchNhi(nhi);
-
-  try {
-    const data = await getPatientByNhi(nhi); // pass NHI directly
-    setPatient(data);
-  } catch (err: any) {
-    setError(err.message);
-    setPatient(undefined);
-  } finally {
-    setLoading(false);
-  }
-};
-
+    try {
+      const data = await getPatientByNhi(nhi); // pass NHI directly
+      setPatient(data);
+    } catch (err: any) {
+      setError(err.message);
+      setPatient(undefined);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   /**
    * Handle form field changes
@@ -93,11 +91,16 @@ const loadPatient = async () => {
 
               {loading && <p className="text-center">Loading patient...</p>}
               {error && (
-                <p className="text-center text-red-500 font-semibold">{error}</p>
+                <p className="text-center text-red-500 font-semibold">
+                  {error}
+                </p>
               )}
 
               {!loading && patient && (
-                <form onSubmit={editPatient} className="flex flex-col space-y-4 items-center">
+                <form
+                  onSubmit={editPatient}
+                  className="flex flex-col space-y-4 items-center"
+                >
                   <div className="flex flex-col space-y-2 w-full max-w-lg">
                     <label htmlFor="nhi" className="font-medium">
                       NHI:
@@ -145,20 +148,20 @@ const loadPatient = async () => {
 
                     <button
                       type="submit"
-                      className="cosmic-button mt-4 px-6 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
+                      className="cosmic-button mt-4 px-6 py-2 rounded"
                     >
                       Save Changes
                     </button>
-
                   </div>
                 </form>
-                
               )}
-                  {/* Return to Previous Page */}
-                  <button onClick={() => navigate("/patients")} 
-                    className="cosmic-button mt-4 px-6 py-2 rounded bg-blue-600 text-white hover:bg-blue-700">
-                    Back to Patients
-                  </button>
+              {/* Return to Previous Page */}
+              <button
+                onClick={() => navigate("/patients")}
+                className="cosmic-button mt-4 px-6 py-2 rounded"
+              >
+                Back to Patients
+              </button>
             </div>
           </section>
         </SignedIn>

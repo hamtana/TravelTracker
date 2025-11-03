@@ -48,6 +48,9 @@ export function ViewPatientBookings() {
     navigate(`/patients/${nhi}/bookings/${booking.id}`);
   }
 
+  // Need a method to return notes for each visible booking.
+
+
 
   return (
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden">

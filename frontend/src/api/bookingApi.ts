@@ -5,85 +5,111 @@ import type { SupportPerson } from "./supportPersonApi";
 import type { Patient } from "./patientApi";
 import type { Notes } from "./notesApi";
 
-
 export interface Booking {
-    id?: number; 
-    patient: Patient;
-    dateOfDeparture: string;
-    dateOfReturn: string;
-    destination: string;
-    bookingStatus: string;
-    estimatedCost: number;
-    estimatedCostForPatient : number;
-    bookingCreatedAt: string;
-    serviceProvider: ServiceProvider;
-    supportPersons : SupportPerson[];
-    notes : Notes[];
-    accommodationAddress : Accommodation;
+  id?: number;
+  patient: Patient;
+  dateOfDeparture: string;
+  dateOfReturn: string;
+  destination: string;
+  bookingStatus: string;
+  estimatedCost: number;
+  estimatedCostForPatient: number;
+  bookingCreatedAt: string;
+  serviceProvider: ServiceProvider;
+  supportPersons: SupportPerson[];
+  notes: Notes[];
+  accommodationAddress: Accommodation;
 }
 
 const API_BASE = "http://localhost:8080/api/bookings";
 
 export function BookingApi() {
-    const authenticatedFetch = useFetch();
+  const authenticatedFetch = useFetch();
 
+  const addBooking = async (
+    booking: Booking,
+    nhi: String
+  ): Promise<Booking> => {
+    return authenticatedFetch(`${API_BASE}/${nhi}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        ...booking,
+      }),
+    });
+  };
 
-    const addBooking = async (booking : Booking, nhi: String): Promise<Booking> => {
-        return authenticatedFetch(`${API_BASE}/${nhi}`, {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({
-                ...booking,
-            }),
-        });
-    };
+  const deleteBookingById = async (id: number, nhi: string): Promise<void> => {
+    return authenticatedFetch(`${API_BASE}/${id}/${nhi}`, {
+      method: "DELETE",
+    });
+  };
 
-    const deleteBookingById = async (id: string, nhi: string): Promise<void> => {
-        return authenticatedFetch(`${API_BASE}/${id}/${nhi}`, {
-            method: "DELETE",
-        });
+  const getBookingById = async (id: number, nhi: string): Promise<Booking> => {
+    try {
+      return await authenticatedFetch(`${API_BASE}/${id}/${nhi}`);
+    } catch (err: any) {
+      if (err.message.includes("404")) {
+        throw new Error("No booking found with that ID");
+      }
+      throw err;
     }
+  };
 
-    const getBookingById = async (id: string, nhi: string): Promise<Booking> => {
-        try{
-            return await authenticatedFetch(`${API_BASE}/${id}/${nhi}`);
-        } catch (err: any) {
-            if (err.message.includes("404")) {
-                throw new Error("No booking found with that ID");
-            }
-            throw err;
-        };
-    };
+  const getAllBookings = async (): Promise<Booking[]> => {
+    return authenticatedFetch(API_BASE);
+  };
 
-    const getAllBookings = async (): Promise<Booking[]> => {
-        return authenticatedFetch(API_BASE);
-    };
+  const updateBookingById = async (
+    id: number,
+    nhi: string,
+    booking: Booking
+  ): Promise<Booking> => {
+    return authenticatedFetch(`${API_BASE}/${nhi}/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(booking),
+    });
+  };
 
-    const updateBookingById = async (id: string, nhi: string, booking : Booking): Promise<Booking> => {
-        return authenticatedFetch(`${API_BASE}/${id}/${nhi}`, {
-            method: "PUT",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify(booking),
-        });
-    };
+  const getBookingsByPatientNhi = async (nhi: string): Promise<Booking[]> => {
+    try {
+      return await authenticatedFetch(`${API_BASE}/${nhi}`);
+    } catch (err: any) {
+      if (err.message.includes("404")) {
+        throw new Error("No bookings found for that patient NHI");
+      }
+      throw err;
+    }
+  };
 
-    const getBookingsByPatientNhi = async (nhi: string): Promise<Booking[]> => {
-        try {
-            return await authenticatedFetch(`${API_BASE}/${nhi}`);
-        } catch (err: any) {
-            if (err.message.includes("404")) {
-                throw new Error("No bookings found for that patient NHI");
-            }
-            throw err;
-        };
-    };
+  const addBookingNote = async (id: number, note: Notes): Promise<Notes> => {
+    return authenticatedFetch(`${API_BASE}/${id}/notes`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(note),
+    });
+  };
 
-    return {
-        addBooking,
-        deleteBookingById,
-        getBookingById,
-        getAllBookings,
-        updateBookingById,
-        getBookingsByPatientNhi
-    };
+const getBookingNotes = async (id: number): Promise<Notes[]> => {
+  try {
+    return await authenticatedFetch(`${API_BASE}/${id}/notes`);
+  } catch (err: any) {
+    if (err.message.includes("404")) {
+      throw new Error("No notes found for this booking");
+    }
+    throw err;
+  }
+};
+
+  return {
+    addBooking,
+    deleteBookingById,
+    getBookingById,
+    getAllBookings,
+    updateBookingById,
+    getBookingsByPatientNhi,
+    addBookingNote,
+    getBookingNotes
+  };
 }

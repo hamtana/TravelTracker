@@ -5,10 +5,14 @@ import { ThemeToggle } from "../components/ThemeToggle";
 import SignedOutComponent from "../components/SignedOutComponent";
 import { useNavigate } from "react-router-dom";
 import type { Booking } from "../api/bookingApi";
+import { BookingApi } from "../api/bookingApi";
+import type { Notes } from "../api/notesApi";
 
 export function ViewBooking() {
-  const [booking, setBooking] = useState<Booking | null>(null);
+  const { updateBookingById, addBookingNote } = BookingApi();
+  const [booking, setBooking] = useState<Booking>();
   const [loading, setLoading] = useState(false);
+  const [notesText, setNotesText] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
@@ -28,10 +32,67 @@ export function ViewBooking() {
       }
       const parsedBooking: Booking = JSON.parse(storedBooking);
       setBooking(parsedBooking);
+
+      // Initialize notes textarea string
+      setNotesText(
+        parsedBooking.notes
+          ? parsedBooking.notes.map((n: Notes) => n.message).join("\n")
+          : ""
+      );
     } catch (err) {
       setError("Failed to load booking details.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { id, value } = e.target;
+
+    if (id === "notes") {
+      setNotesText(value);
+      return;
+    }
+
+    setBooking((prev) => {
+      if (!prev) return prev;
+      return { ...prev, [id]: value };
+    });
+  };
+
+  const editBooking = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!booking || !booking.id || !booking.patient?.nhi) {
+      alert("❌ Booking ID or Patient NHI is missing.");
+      return;
+    }
+
+    try {
+      await updateBookingById(
+        booking.id,
+        booking.patient.nhi,
+        booking
+      );
+
+      // Add each note individually
+      const noteLines = notesText
+        .split(/\r?\n/)
+        .map((line) => line.trim())
+        .filter((line) => line !== "");
+
+      for (const line of noteLines) {
+        await addBookingNote(booking.id, {
+          message: line, // backend expects 'message'
+          booking: booking, 
+        });
+      }
+
+      alert("✅ Booking updated successfully.");
+    } catch (err) {
+      console.error(err);
+      alert("❌ Failed to update booking.");
     }
   };
 
@@ -45,68 +106,168 @@ export function ViewBooking() {
         </SignedOut>
 
         <SignedIn>
-            <section className="relative min-h-screen flex flex-col items-center justify-center px-4 py-12">
-          <div className="container max-w-3xl mx-auto space-y-8">
-            <h1 className="text-2xl font-bold mb-4">View Booking</h1>
+          <section className="relative min-h-screen flex flex-col items-center justify-center px-4 py-24">
+            <div className="container max-w-6xl mx-auto space-y-8">
+              <h1 className="text-2xl font-bold text-center">
+                View / Edit Booking
+              </h1>
 
-            {loading && <p>Loading booking...</p>}
-            {error && <p className="text-red-500">Error: {error}</p>}
+              {loading && <p className="text-center">Loading booking...</p>}
+              {error && (
+                <p className="text-center text-red-500 font-semibold">
+                  {error}
+                </p>
+              )}
 
-            {booking && (
-              <div className="space-y-2">
-                <p>
-                  <strong>Booking ID:</strong> {booking.id}
-                </p>
-                <p>
-                  <strong>Destination:</strong> {booking.destination}
-                </p>
-                <p>
-                  <strong>Date of Departure:</strong> {booking.dateOfDeparture}
-                </p>
-                <p>
-                  <strong>Date of Return:</strong> {booking.dateOfReturn}
-                </p>
-                <p>
-                  <strong>Booking Created At:</strong>{" "}
-                  {new Date(booking.bookingCreatedAt).toLocaleString()}
-                </p>
-                <p>
-                  <strong>Service Provider:</strong>{" "}
-                  {booking.serviceProvider
-                    ? `${booking.serviceProvider.name}, ${booking.serviceProvider.address}`
-                    : "Not specified"}
-                </p>
-                <p>
-                  <strong>Support Persons:</strong>{" "}
-                  {booking.supportPersons?.length
-                    ? booking.supportPersons.map((sp) => sp.firstName).join(", ")
-                    : "None"}
-                </p>
-                <p>
-                  <strong>Accommodation Address:</strong>{" "}
-                  {booking.accommodationAddress
-                    ? `${booking.accommodationAddress.name}, ${booking.accommodationAddress.address}`
-                    : "Not specified"}
-                </p>
+              {!loading && booking && (
+                <form
+                  onSubmit={editBooking}
+                  className="flex flex-col space-y-4 items-center"
+                >
+                  <div className="flex flex-col space-y-2 w-full max-w-lg">
+                    <label htmlFor="bookingCreatedAt" className="font-medium">
+                      Booking Created At:
+                    </label>
+                    <input
+                      type="text"
+                      id="bookingCreatedAt"
+                      value={new Date(
+                        booking.bookingCreatedAt
+                      ).toLocaleString()}
+                      readOnly
+                      className="border p-2 rounded"
+                    />
 
-                <div>
-                  <strong>Notes:</strong>
-                  {booking.notes && booking.notes.length > 0 ? (
-                    <ul className="list-disc list-inside">
-                      {booking.notes.map((note, index) => (
-                        <li key={index}>{note.message}</li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <p>No notes available.</p>
-                  )}
-                </div>
-                <button className="cosmic-button" onClick={() => navigate(-1)}>
-                    Back
+                    <label htmlFor="dateOfDeparture" className="font-medium">
+                      Departure Date:
+                    </label>
+                    <input
+                      type="date"
+                      id="dateOfDeparture"
+                      value={booking.dateOfDeparture}
+                      onChange={handleChange}
+                      className="border p-2 rounded"
+                    />
+
+                    <label htmlFor="dateOfReturn" className="font-medium">
+                      Return Date:
+                    </label>
+                    <input
+                      type="date"
+                      id="dateOfReturn"
+                      value={booking.dateOfReturn}
+                      onChange={handleChange}
+                      className="border p-2 rounded"
+                    />
+
+                    <label htmlFor="patientNhi" className="font-medium">
+                      Patient NHI:
+                    </label>
+                    <input
+                      type="text"
+                      id="patientNhi"
+                      value={booking.patient.nhi}
+                      readOnly
+                      className="border p-2 rounded"
+                    />
+
+                    <label htmlFor="destination" className="font-medium">
+                      Destination:
+                    </label>
+                    <input
+                      type="text"
+                      id="destination"
+                      value={booking.destination}
+                      onChange={handleChange}
+                      className="border p-2 rounded"
+                    />
+
+                    <label htmlFor="bookingStatus" className="font-medium">
+                      Booking Status:
+                    </label>
+                    <input
+                      type="text"
+                      id="bookingStatus"
+                      value={booking.bookingStatus}
+                      onChange={handleChange}
+                      className="border p-2 rounded"
+                    />
+
+                    <label htmlFor="estimatedCost" className="font-medium">
+                      Estimated Cost:
+                    </label>
+                    <input
+                      type="number"
+                      id="estimatedCost"
+                      value={booking.estimatedCost || ""}
+                      onChange={handleChange}
+                      className="border p-2 rounded"
+                    />
+
+                    <label htmlFor="notes" className="font-medium">
+                      Notes:
+                    </label>
+                    <textarea
+                      id="notes"
+                      value={notesText}
+                      onChange={handleChange}
+                      className="border p-2 rounded h-24 w-full"
+                    />
+
+                    <label
+                      htmlFor="estimatedCostForPatient"
+                      className="font-medium"
+                    >
+                      Estimated Cost for Patient:
+                    </label>
+                    <input
+                      type="number"
+                      id="estimatedCostForPatient"
+                      value={booking.estimatedCostForPatient || ""}
+                      onChange={handleChange}
+                      className="border p-2 rounded"
+                    />
+
+                    <label htmlFor="serviceProvider" className="font-medium">
+                      Service Provider:
+                    </label>
+                    <input
+                      type="text"
+                      id="serviceProvider"
+                      value={booking.serviceProvider?.name || "N/A"}
+                      readOnly
+                      className="border p-2 rounded"
+                    />
+
+                    <label htmlFor="accommodation" className="font-medium">
+                      Accommodation Address:
+                    </label>
+                    <input
+                      type="text"
+                      id="accommodation"
+                      value={booking.accommodationAddress?.name || "N/A"}
+                      onChange={handleChange}
+                      className="border p-2 rounded"
+                    />
+
+                    <button
+                      type="submit"
+                      className="cosmic-button mt-4 px-6 py-2 rounded"
+                    >
+                      Save Changes
                     </button>
-              </div>
-            )}
-          </div>
+                  </div>
+                </form>
+              )}
+
+              {/* Return to Previous Page */}
+              <button
+                onClick={() => navigate(-1)}
+                className="cosmic-button mt-4 px-6 py-2 rounded"
+              >
+                Back to Bookings
+              </button>
+            </div>
           </section>
         </SignedIn>
       </main>
