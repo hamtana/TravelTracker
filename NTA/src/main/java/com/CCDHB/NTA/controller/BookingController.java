@@ -1,8 +1,10 @@
 package com.CCDHB.api;
 
 import com.CCDHB.NTA.entity.BookingEntity;
+import com.CCDHB.NTA.entity.NoteEntity;
 import com.CCDHB.NTA.entity.PatientEntity;
 import com.CCDHB.NTA.mapper.BookingMapper;
+import com.CCDHB.NTA.mapper.NoteMapper;
 import com.CCDHB.NTA.mapper.PatientMapper;
 import com.CCDHB.NTA.repository.BookingRepository;
 import com.CCDHB.NTA.repository.PatientRepository;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.NativeWebRequest;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin(origins = "*") // Allow requests from any origin
@@ -35,11 +38,27 @@ public class BookingController implements BookingsApi {
     private PatientRepository patientRepository;
 
     @Autowired
+    private NoteMapper noteMapper;
+
+    @Autowired
     private PatientMapper patientMapper;
 
     @Override
     public ResponseEntity<Void> addBookingNote(String id, Note note) {
-        return BookingsApi.super.addBookingNote(id, note);
+        BookingEntity bookingEntity = bookingRepository.findById(Integer.parseInt(id)).orElse(null);
+        if (bookingEntity == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            NoteEntity noteEntity = noteMapper.toEntity(note);
+            noteEntity.setBooking(bookingEntity);
+            if (bookingEntity.getNotes() == null) {
+                bookingEntity.setNotes(new ArrayList<>());
+            }
+            bookingEntity.getNotes().add(noteEntity);
+            bookingRepository.save(bookingEntity);
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        }
+
     }
 
     @Override
@@ -92,8 +111,35 @@ public class BookingController implements BookingsApi {
 
     @Override
     public ResponseEntity<List<Note>> getBookingNotes(String id) {
-        return BookingsApi.super.getBookingNotes(id);
+        // Parse booking ID
+        int bookingId;
+        try {
+            bookingId = Integer.parseInt(id);
+        } catch (NumberFormatException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        // Fetch booking from repository
+        Optional<BookingEntity> bookingEntityOpt = bookingRepository.findById(bookingId);
+        if (bookingEntityOpt.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        BookingEntity bookingEntity = bookingEntityOpt.get();
+
+        // Get notes from booking, handle null
+        List<NoteEntity> noteEntities = bookingEntity.getNotes() != null
+                ? bookingEntity.getNotes()
+                : Collections.emptyList();
+
+        // Map NoteEntity to Note DTO
+        List<Note> notes = noteEntities.stream()
+                .map(noteMapper::toDto)
+                .collect(Collectors.toList());
+
+        return new ResponseEntity<>(notes, HttpStatus.OK);
     }
+
 
     @Override
     public ResponseEntity<List<Booking>> getPatientBookings(String nhi) {
@@ -108,17 +154,17 @@ public class BookingController implements BookingsApi {
 
     @Override
     public ResponseEntity<Booking> updateBookingById(Integer id, String nhi, Booking booking) {
-        // Check if booking exists and belongs to patient with given NHI
         Optional<BookingEntity> bookingEntityOpt = bookingRepository.findById(id);
         if (bookingEntityOpt.isPresent() && bookingEntityOpt.get().getPatient().getNhi().equals(nhi)) {
             BookingEntity bookingEntityToUpdate = bookingEntityOpt.get();
-            // Set the ID to ensure consistency and update the entity
-            booking.setId(id);
-            BookingEntity updatedEntity = bookingMapper.toEntity(booking);
+
             // Preserve the patient association
+            BookingEntity updatedEntity = bookingMapper.toEntity(booking);
             updatedEntity.setPatient(bookingEntityToUpdate.getPatient());
-            // Save updated entity
+
+            // Save the updated booking entity
             bookingRepository.save(bookingEntityToUpdate);
+
             return new ResponseEntity<>(bookingMapper.toDto(bookingEntityToUpdate), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -126,5 +172,4 @@ public class BookingController implements BookingsApi {
     }
 
 
-
-}
+    }

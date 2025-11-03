@@ -21,6 +21,22 @@ public class NoteEntity {
     @JoinColumn(name = "patient_nhi")
     private PatientEntity patient;
 
+    public BookingEntity getBooking() {
+        return booking;
+    }
+
+    public void setBooking(BookingEntity booking) {
+        this.booking = booking;
+    }
+
+    public PatientEntity getPatient() {
+        return patient;
+    }
+
+    public void setPatient(PatientEntity patient) {
+        this.patient = patient;
+    }
+
     public Integer getId() {
         return id;
     }

@@ -14,11 +14,11 @@ public interface PatientMapper {
     PatientMapper INSTANCE = Mappers.getMapper(PatientMapper.class);
 
     @Mapping(source = "serviceProvider", target = "patientServiceProviders")
-    @Mapping(source = "notes", target = "notes")
+    @Mapping(target = "notes", ignore = true)
     PatientEntity toEntity(Patient patientDto);
 
     @Mapping(source = "patientServiceProviders", target = "serviceProvider")
-    @Mapping(source = "notes", target = "notes")
+    @Mapping(target = "notes", ignore = true)
     Patient toDto(PatientEntity patientEntity);
 
 }

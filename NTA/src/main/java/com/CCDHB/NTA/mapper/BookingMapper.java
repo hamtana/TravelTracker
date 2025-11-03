@@ -14,8 +14,10 @@ public interface BookingMapper {
     PatientMapper INSTANCE = Mappers.getMapper(PatientMapper.class);
 
     @Mapping(source= "patient", target= "patient")
+    @Mapping(target = "notes", ignore = true)
     BookingEntity toEntity(Booking bookingDto);
 
     @Mapping(source= "patient", target= "patient")
+    @Mapping(target = "notes", ignore = true)
     Booking toDto(BookingEntity bookingEntity);
 }
